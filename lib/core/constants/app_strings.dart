@@ -6,4 +6,6 @@ class AppStrings {
 
   static const signIn = "Sign In";
   static const signOut = "Sign Out";
+
+  static const mustBePvamuEmail = "Must be a PVAMU email address";
 }

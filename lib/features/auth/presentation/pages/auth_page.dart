@@ -5,10 +5,10 @@ import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/global/success_page.dart';
 import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/helpers/navigation/app_routes.dart';
-import 'package:sign_class/core/helpers/navigation/local_navigator.dart';
 import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
-import 'package:sign_class/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:sign_class/features/auth/data/models/student_model.dart';
+import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -18,7 +18,10 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  AuthController authController = Get.put(AuthController());
+  StudentController studentController = Get.put(StudentController());
+
+  var existsByName = true;
+  var emailErrorText = "";
 
   @override
   Widget build(BuildContext context) {
@@ -27,114 +30,185 @@ class _AuthPageState extends State<AuthPage> {
       onTap: () {
         FocusScope.of(context).unfocus(); // dismiss keyboard
         setState(() {
-          authController.filteredNames.clear(); // hide suggestion box
+          studentController.filteredNames.clear(); // hide suggestion box
         });
       },
       child: Material(
         child: Container(
           padding: EdgeInsets.all(24),
           color: AppColors.purple,
-          child: Obx(()=>Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Image.asset(
-                  ImageElements.pvamuLogo,
-                  width: 180,
-                  height: 160,
-                  fit: BoxFit.contain, // Ensure image fits
+          child: Obx(
+            () => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Image.asset(
+                    ImageElements.pvamuLogo,
+                    width: 180,
+                    height: 160,
+                    fit: BoxFit.contain, // Ensure image fits
+                  ),
                 ),
-              ),
-              SizedBox(height: 80),
-              Text(
-                authController.authPageTitle.value,
-                style: TextStyle(
-                  color: AppColors.gold,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
+                SizedBox(height: 80),
+                Text(
+                  studentController.authPageTitle.value,
+                  style: TextStyle(
+                    color: AppColors.gold,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(height: 24),
-              SizedBox(
-                width: displayWidth(context) / 1.4,
-                child: TextField(
-                  controller: authController.nameTEC,
-                  onChanged: authController.onTextChanged,
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    labelText: 'Name',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    floatingLabelAlignment: FloatingLabelAlignment.start, // aligns to the top-left
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                SizedBox(height: 24),
+
+                SizedBox(
+                  width: displayWidth(context) / 1.4,
+                  child: TextField(
+                    controller: studentController.nameTEC,
+                    onChanged: studentController.onTextChanged,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: 'Name',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      floatingLabelAlignment: FloatingLabelAlignment.start,
+                      // aligns to the top-left
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              if (authController.filteredNames.isNotEmpty)
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ListView.builder(
-                    itemCount: authController.filteredNames.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(authController.filteredNames[index]),
-                        onTap:
-                            () => authController.onNameSelected(
-                          authController.filteredNames[index],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              SizedBox(height: 24),
 
-              SizedBox(
-                width: displayWidth(context) / 1.4,
-                child: CustomButton(
-                  onPressed: () {
-                    if(authController.authPageTitle.value == AppStrings.signOut){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (_) => SuccessPage(
-                            userName: authController.nameTEC.text,
+                if (existsByName == false)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: displayWidth(context) / 1.4,
+                        child: TextField(
+                          controller: studentController.emailTEC,
+                          onChanged: (value) {
+                            if (!studentController.isPvamuEmail(value)) {
+                              emailErrorText = AppStrings.mustBePvamuEmail;
+                            } else {
+                              emailErrorText = "";
+                            }
+
+                            setState(() {});
+                          },
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelText: 'Email',
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            floatingLabelAlignment:
+                                FloatingLabelAlignment.start,
+                            // aligns to the top-left
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
-                      );
-                    }else{
-                      navigationController.navigateTo(Routes.detailsPageRoute);
-                    }
+                      ),
+                      if (emailErrorText.isNotEmpty)
+                        Text(
+                          emailErrorText,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                    ],
+                  ),
 
-                  },
-                  text: authController.authPageTitle.value == AppStrings.signOut ? "Sign out" : "Next",
-                  textColor: authController.authPageTitle.value != AppStrings.signOut ? AppColors.purple : AppColors.white,
-                  bgColor:  authController.authPageTitle.value == AppStrings.signOut ? Colors.red : AppColors.gold,
-                  fontSize: 18,
+                Obx(() {
+                  if (studentController.filteredNames.isNotEmpty)
+                    return Container(
+                      margin: EdgeInsets.only(top: 10),
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListView.builder(
+                        itemCount: studentController.filteredNames.length,
+                        itemBuilder: (context, index) {
+                          var model = studentController.filteredNames[index];
+                          return ListTile(
+                            title: Text(model.name!),
+                            onTap:
+                                () => studentController.onNameSelected(
+                                  model.name!,
+                                ),
+                          );
+                        },
+                      ),
+                    );
+                  else {
+                    return SizedBox.shrink();
+                  }
+                }),
+                SizedBox(height: 24),
+
+                SizedBox(
+                  width: displayWidth(context) / 1.4,
+                  child: CustomButton(
+                    onPressed: () async {
+                      if (studentController.authPageTitle.value ==
+                          AppStrings.signOut) {
+                        await studentController.signOut();
+                      } else {
+                        existsByName =
+                            await studentController.doesUserExistByName();
+
+                        if (!existsByName &&
+                            studentController.emailTEC.text.isNotEmpty &&
+                            studentController.isPvamuEmail(
+                              studentController.emailTEC.text,
+                            )) {
+                          await studentController.doesUserExistByEmail();
+
+                          Get.toNamed(Routes.detailsPageRoute);
+
+                        } else if (existsByName) {
+                          Get.toNamed(Routes.detailsPageRoute);
+                        }
+
+                        setState(() {});
+                      }
+                    },
+                    text:
+                        studentController.authPageTitle.value ==
+                                AppStrings.signOut
+                            ? "Sign out"
+                            : "Next",
+                    textColor:
+                        studentController.authPageTitle.value !=
+                                AppStrings.signOut
+                            ? AppColors.purple
+                            : AppColors.white,
+                    bgColor:
+                        studentController.authPageTitle.value ==
+                                AppStrings.signOut
+                            ? Colors.red
+                            : AppColors.gold,
+                    fontSize: 18,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              SizedBox(
-                width: displayWidth(context) / 1.4,
-                child: CustomButton(
-                  onPressed: () {
-                    navigationController.goBack();
-                  },
-                  text: "Go back",
-                  textColor: AppColors.purple,
-                  fontSize: 18,
+                SizedBox(height: 16),
+                SizedBox(
+                  width: displayWidth(context) / 1.4,
+                  child: CustomButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    text: "Go back",
+                    textColor: AppColors.purple,
+                    fontSize: 18,
+                  ),
                 ),
-              ),
-            ],
-          )),
+              ],
+            ),
+          ),
         ),
       ),
     );

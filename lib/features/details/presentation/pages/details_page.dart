@@ -3,10 +3,9 @@ import 'package:get/get.dart';
 import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/global/success_page.dart';
 import 'package:sign_class/core/helpers/image_elements.dart';
-import 'package:sign_class/core/helpers/navigation/navigation_controller.dart';
 import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
-import 'package:sign_class/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 import 'package:sign_class/features/home/presentation/controllers/home_controller.dart';
 
@@ -19,8 +18,7 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   final detailsController = Get.put(DetailsController());
-  final authController = Get.put(AuthController());
-  final navigationController = Get.put(NavigationController());
+  final studentController = Get.put(StudentController());
   final homeController = Get.put(HomeController());
 
   @override
@@ -107,26 +105,12 @@ class _DetailsPageState extends State<DetailsPage> {
               SizedBox(
                 width: displayWidth(context) / 1.4,
                 child: CustomButton(
-                  onPressed: () {
-                    homeController.numOfSignedInStudents.value++;
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (_) => SuccessPage(
-                              userName: authController.nameTEC.text,
-                            ),
-                      ),
-                    );
-
-                    // Navigator.pushAndRemoveUntil(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (_) => SuccessPage(userName: 'Alex'),
-                    //   ),
-                    //       (Route<dynamic> route) => false, // Remove all previous routes
-                    // );
+                  onPressed: () async{
+                    if (studentController.register.value) {
+                      studentController.addStudent();
+                    } else {
+                      await studentController.signIn();
+                    }
                   },
                   text: "Sign in",
                   textColor: AppColors.purple,
@@ -140,7 +124,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 width: displayWidth(context) / 1.4,
                 child: CustomButton(
                   onPressed: () {
-                    navigationController.goBack();
+                    Get.back();
                   },
                   text: "Go back",
                   textColor: AppColors.purple,

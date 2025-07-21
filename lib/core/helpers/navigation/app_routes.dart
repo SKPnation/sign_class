@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
-import 'package:sign_class/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 import 'package:sign_class/features/auth/presentation/pages/auth_page.dart';
 import 'package:sign_class/features/details/presentation/pages/details_page.dart';
 import 'package:sign_class/features/home/presentation/pages/home.dart';
@@ -26,7 +26,7 @@ abstract class Routes{
   static const homeDisplayName = AppStrings.homeTitle;
   static const homeRoute = "/home";
 
-  static var authenticationDisplayName = AuthController.instance.authPageTitle.value;
+  static var authenticationDisplayName = StudentController.instance.authPageTitle.value;
   static const authenticationPageRoute = "/auth";
 
   static const detailsDisplayName = AppStrings.detailsPageTitle;
