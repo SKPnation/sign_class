@@ -40,7 +40,7 @@ class StudentController extends GetxController {
 
   addStudent() async {
     Student studentModel = Student(
-      id: studentRepo.studentsCollection.id,
+      id: studentRepo.studentsCollection.doc().id,
       name: nameTEC.text,
       email: emailTEC.text,
       createdAt: DateTime.now(),
@@ -50,7 +50,7 @@ class StudentController extends GetxController {
     await studentRepo.createStudent(studentModel);
     homeController.numOfSignedInStudents.value++;
 
-
+    Get.to(SuccessPage(userName: nameTEC.text));
   }
 
   Future signIn() async {
@@ -62,10 +62,7 @@ class StudentController extends GetxController {
     await studentRepo.updateUser(data);
     homeController.numOfSignedInStudents.value++;
 
-    Navigator.push(
-      Get.context!,
-      MaterialPageRoute(builder: (_) => SuccessPage(userName: nameTEC.text)),
-    );
+    Get.to(SuccessPage(userName: nameTEC.text));
 
   }
 
@@ -111,19 +108,15 @@ class StudentController extends GetxController {
 
     if (querySnapshot!.docs.isNotEmpty) {
       var data = {
-        "id": querySnapshot!.docs.first.id,
         "time_in": DateTime.now(),
       };
 
       await studentRepo.updateUser(data);
       studentRepo.deleteUser(querySnapshot!.docs.first.id);
 
-      --homeController.numOfSignedInStudents.value;
+      homeController.numOfSignedInStudents.value--;
 
-      Navigator.push(
-        Get.context!,
-        MaterialPageRoute(builder: (_) => SuccessPage(userName: nameTEC.text)),
-      );
+      Get.to(SuccessPage(userName: nameTEC.text));
     }
   }
 
