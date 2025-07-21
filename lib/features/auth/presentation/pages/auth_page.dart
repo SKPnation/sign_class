@@ -199,7 +199,7 @@ class _AuthPageState extends State<AuthPage> {
                   width: displayWidth(context) / 1.4,
                   child: CustomButton(
                     onPressed: () {
-                      Get.back();
+                      Get.offNamed(Routes.homeRoute);
                     },
                     text: "Go back",
                     textColor: AppColors.purple,

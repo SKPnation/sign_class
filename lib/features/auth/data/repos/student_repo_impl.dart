@@ -37,7 +37,8 @@ class StudentRepoImpl implements StudentRepo {
 
   @override
   Future<void> updateUser(Map<String, dynamic> fields) async {
-    await studentsCollection.doc(fields['id']).update(fields);
+    final data = Map<String, dynamic>.from(fields)..remove('id');
+    await studentsCollection.doc(fields['id']).update(data);
   }
 
   @override

@@ -49,9 +49,9 @@ class Home extends StatelessWidget {
             SizedBox(
               width: displayWidth(context) / 1.4,
               child: CustomButton(
-                onPressed: () {
+                onPressed: () async{
                   studentController.authPageTitle.value = AppStrings.signOut;
-                  studentController.signOut();
+                  Get.toNamed(Routes.authenticationPageRoute);
                 },
                 text: "Sign Out",
                 textColor: AppColors.purple,

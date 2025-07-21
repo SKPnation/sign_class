@@ -14,39 +14,50 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  Future<void> initializeDefault() async {
-    FirebaseApp app = await Firebase.initializeApp(
+  late Future<FirebaseApp> initFirebase;
+  @override
+  void initState() {
+    initFirebase = Firebase.initializeApp(
       options: const FirebaseOptions(
         apiKey: "AIzaSyD--sT_bY-9dXT2dgAhymsAEPCEdFYh7BM",
         authDomain: "pvamu-student-sign-in.firebaseapp.com",
         projectId: "pvamu-student-sign-in",
-        storageBucket: "pvamu-student-sign-in.firebasestorage.app",
+        storageBucket: "pvamu-student-sign-in.appspot.com", // 🔥 Fix typo here
         messagingSenderId: "757260583433",
         appId: "1:757260583433:web:627fe15ebb56e11865eed8",
         measurementId: "G-K99SQFSL9H",
       ),
     );
-  }
-
-  @override
-  void initState() {
-    initializeDefault();
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      initialRoute: AppPages.initial,
-      unknownRoute: GetPage(
-        name: '/notfound',
-        page: () => const Scaffold(body: Center(child: Text("Page Not Found"))),
-      ),
-      theme: ThemeData(scaffoldBackgroundColor: AppColors.white),
-      getPages: AppPages.pages,
-      debugShowCheckedModeBanner: false,
-      initialBinding: AllControllerBinding(),
+    return FutureBuilder(
+      future: initFirebase,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return GetMaterialApp(
+            initialRoute: AppPages.initial,
+            unknownRoute: GetPage(
+              name: '/notfound',
+              page: () => const Scaffold(
+                  body: Center(child: Text("Page Not Found"))),
+            ),
+            theme: ThemeData(scaffoldBackgroundColor: AppColors.white),
+            getPages: AppPages.pages,
+            debugShowCheckedModeBanner: false,
+            initialBinding: AllControllerBinding(),
+          );
+        }
+
+        // You can return a loading screen while waiting
+        return const MaterialApp(
+          home: Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          ),
+        );
+      },
     );
   }
 }

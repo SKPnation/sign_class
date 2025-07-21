@@ -54,16 +54,18 @@ class StudentController extends GetxController {
   }
 
   Future signIn() async {
-    var data = {
-      "id": querySnapshot!.docs.first.id,
-      "time_in": DateTime.now(),
-    };
+    querySnapshot =
+        await studentRepo.studentsCollection
+            .where('name', isEqualTo: nameTEC.text)
+            .limit(1)
+            .get();
+
+    var data = {"id": querySnapshot!.docs.first.id, "time_in": DateTime.now(), "time_out": null};
 
     await studentRepo.updateUser(data);
     homeController.numOfSignedInStudents.value++;
 
     Get.to(SuccessPage(userName: nameTEC.text));
-
   }
 
   Future<bool> doesUserExistByName() async {
@@ -102,22 +104,19 @@ class StudentController extends GetxController {
   Future signOut() async {
     querySnapshot =
         await studentRepo.studentsCollection
-            .where('email', isEqualTo: emailTEC.text)
+            .where('name', isEqualTo: nameTEC.text)
             .limit(1)
             .get();
 
-    if (querySnapshot!.docs.isNotEmpty) {
-      var data = {
-        "time_in": DateTime.now(),
-      };
+    var data = {"id": querySnapshot!.docs.first.id, "time_out": DateTime.now()};
 
-      await studentRepo.updateUser(data);
-      studentRepo.deleteUser(querySnapshot!.docs.first.id);
+    await studentRepo.updateUser(data);
 
-      homeController.numOfSignedInStudents.value--;
+    studentRepo.deleteUser(querySnapshot!.docs.first.id);
 
-      Get.to(SuccessPage(userName: nameTEC.text));
-    }
+    homeController.numOfSignedInStudents.value--;
+
+    Get.to(SuccessPage(userName: nameTEC.text));
   }
 
   bool isPvamuEmail(String email) {
