@@ -9,11 +9,23 @@ import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 import 'package:sign_class/features/home/presentation/controllers/home_controller.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   Home({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final studentController = Get.put(StudentController());
-  final homeController = Get.put(HomeController());
+
+  final homeController = HomeController.instance;
+
+  @override
+  void initState() {
+    homeController.totalSignedIn();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +50,6 @@ class Home extends StatelessWidget {
                 onPressed: () {
                   studentController.authPageTitle.value = AppStrings.signIn;
                   Get.toNamed(Routes.authenticationPageRoute);
-
                 },
                 text: "Sign In",
                 textColor: AppColors.purple,
@@ -49,7 +60,7 @@ class Home extends StatelessWidget {
             SizedBox(
               width: displayWidth(context) / 1.4,
               child: CustomButton(
-                onPressed: () async{
+                onPressed: () async {
                   studentController.authPageTitle.value = AppStrings.signOut;
                   Get.toNamed(Routes.authenticationPageRoute);
                 },

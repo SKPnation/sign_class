@@ -1,19 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:sign_class/features/details/data/models/course_model.dart';
+import 'package:sign_class/features/details/data/models/tutor_model.dart';
+import 'package:sign_class/features/details/data/repos/courses_repo_impl.dart';
 
 class DetailsController extends GetxController{
   static final DetailsController instance = Get.find();
 
+  CoursesRepoImpl coursesRepo = CoursesRepoImpl();
+
+  final List<Tutor>? assignedTutors = <Tutor>[];
+
   TextEditingController whyTEC = TextEditingController();
+  // var selectedCourse = "".obs;
+  Rx<Course>? selectedCourse;
 
-  var selectedCourse = "".obs;
-
-  final List<Map<String, dynamic>> courses = [
-    {"id": 1, "name": "Computer Science"},
-    {"id": 2, "name": "Mathematics"},
-    {"id": 3, "name": "Biology"},
-    {"id": 4, "name": "Physics"},
-  ];
-
-
+  Future<List<Course>> getCourses() async =>
+      await coursesRepo.getCoursesWithTutors();
 }

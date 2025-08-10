@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import 'package:sign_class/core/global/success_page.dart';
 import 'package:sign_class/features/auth/data/models/student_model.dart';
 import 'package:sign_class/features/auth/data/repos/student_repo_impl.dart';
+import 'package:sign_class/features/details/data/models/course_model.dart';
+import 'package:sign_class/features/details/data/repos/courses_repo_impl.dart';
+import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 import 'package:sign_class/features/home/presentation/controllers/home_controller.dart';
 
 class StudentController extends GetxController {
@@ -38,7 +41,7 @@ class StudentController extends GetxController {
     filteredNames.clear();
   }
 
-  addStudent() async {
+  addStudent(Course course) async {
     Student studentModel = Student(
       id: studentRepo.studentsCollection.doc().id,
       name: nameTEC.text,
@@ -47,25 +50,40 @@ class StudentController extends GetxController {
       timeIn: DateTime.now(),
     );
 
-    await studentRepo.createStudent(studentModel);
+    await studentRepo.createStudent(studentModel, course);
     homeController.numOfSignedInStudents.value++;
 
     Get.to(SuccessPage(userName: nameTEC.text));
+
+    nameTEC.clear();
+    emailTEC.clear();
+    DetailsController.instance.whyTEC.clear();
+    DetailsController.instance.selectedCourse = null;
   }
 
-  Future signIn() async {
+  Future signIn(Course course) async {
     querySnapshot =
         await studentRepo.studentsCollection
             .where('name', isEqualTo: nameTEC.text)
             .limit(1)
             .get();
 
-    var data = {"id": querySnapshot!.docs.first.id, "time_in": DateTime.now(), "time_out": null};
+    var data = {
+      "id": querySnapshot!.docs.first.id,
+      "course": CoursesRepoImpl().coursesCollection.doc(course.id!),
+      "time_in": DateTime.now(),
+      "time_out": null,
+    };
 
     await studentRepo.updateUser(data);
     homeController.numOfSignedInStudents.value++;
 
     Get.to(SuccessPage(userName: nameTEC.text));
+
+    nameTEC.clear();
+    emailTEC.clear();
+    DetailsController.instance.whyTEC.clear();
+    DetailsController.instance.selectedCourse = null;
   }
 
   Future<bool> doesUserExistByName() async {
