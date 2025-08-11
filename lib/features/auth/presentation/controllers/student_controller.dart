@@ -5,6 +5,7 @@ import 'package:sign_class/core/global/success_page.dart';
 import 'package:sign_class/features/auth/data/models/student_model.dart';
 import 'package:sign_class/features/auth/data/repos/student_repo_impl.dart';
 import 'package:sign_class/features/details/data/models/course_model.dart';
+import 'package:sign_class/features/details/data/models/tutor_model.dart';
 import 'package:sign_class/features/details/data/repos/courses_repo_impl.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 import 'package:sign_class/features/home/presentation/controllers/home_controller.dart';
@@ -41,7 +42,7 @@ class StudentController extends GetxController {
     filteredNames.clear();
   }
 
-  addStudent(Course course) async {
+  addStudent(Course course, Tutor? tutor) async {
     Student studentModel = Student(
       id: studentRepo.studentsCollection.doc().id,
       name: nameTEC.text,
@@ -50,7 +51,7 @@ class StudentController extends GetxController {
       timeIn: DateTime.now(),
     );
 
-    await studentRepo.createStudent(studentModel, course);
+    await studentRepo.createStudent(studentModel, course, tutor);
     homeController.numOfSignedInStudents.value++;
 
     Get.to(SuccessPage(userName: nameTEC.text));

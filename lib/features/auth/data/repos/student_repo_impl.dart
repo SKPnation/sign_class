@@ -3,6 +3,7 @@ import 'package:sign_class/core/data/local/get_store.dart';
 import 'package:sign_class/features/auth/data/models/student_model.dart';
 import 'package:sign_class/features/auth/domain/repos/student_repo.dart';
 import 'package:sign_class/features/details/data/models/course_model.dart';
+import 'package:sign_class/features/details/data/models/tutor_model.dart';
 import 'package:sign_class/features/details/data/repos/courses_repo_impl.dart';
 
 abstract class _Keys {
@@ -12,13 +13,16 @@ abstract class _Keys {
 class StudentRepoImpl extends StudentRepo {
   final CollectionReference studentsCollection = FirebaseFirestore.instance
       .collection('students');
+  final CollectionReference tutorsCollection = FirebaseFirestore.instance
+      .collection('tutors');
 
   @override
-  Future<void> createStudent(Student user, Course course) async {
+  Future<void> createStudent(Student user, Course course, Tutor? tutor) async {
     Map<String, dynamic> userMap = user.toMap();
 
     // Update the course key with the course document ID or path (not DocumentReference itself)
     userMap["course"] = CoursesRepoImpl().coursesCollection.doc(course.id!);
+    userMap["tutor"] = tutor == null ? null : tutorsCollection.doc(tutor.id!);
 
     await studentsCollection.add(userMap);
 
@@ -72,9 +76,6 @@ class StudentRepoImpl extends StudentRepo {
     int total = 0;
 
     for (var doc in docs.docs) {
-      print(doc.id);
-      print(doc.data());
-
       if ((doc.data() as Map<String, dynamic>)['time_out'] == null) {
         total++;
       }

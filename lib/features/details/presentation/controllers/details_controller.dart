@@ -9,11 +9,12 @@ class DetailsController extends GetxController{
 
   CoursesRepoImpl coursesRepo = CoursesRepoImpl();
 
-  final List<Tutor>? assignedTutors = <Tutor>[];
+  // final List<Tutor>? assignedTutors = <Tutor>[];
 
   TextEditingController whyTEC = TextEditingController();
   // var selectedCourse = "".obs;
   Rx<Course>? selectedCourse;
+  Rx<Tutor>? selectedTutor;
 
   Future<List<Course>> getCourses() async =>
       await coursesRepo.getCoursesWithTutors();
