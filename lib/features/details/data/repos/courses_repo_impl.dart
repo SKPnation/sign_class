@@ -20,7 +20,7 @@ class CoursesRepoImpl extends CoursesRepo {
       );
 
       // Resolve assigned tutor references
-      List<dynamic> assignedRefs = courseDoc['assigned'] ?? [];
+      List<dynamic> assignedRefs = courseDoc['tutors'] ?? [];
       List<Tutor> tutors = [];
 
       for (var ref in assignedRefs) {
