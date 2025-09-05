@@ -5,7 +5,7 @@ import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
-import 'package:sign_class/features/home/presentation/pages/home.dart';
+import 'package:sign_class/features/onboarding/presentation/pages/onboarding.dart';
 
 class SuccessPage extends StatelessWidget {
   SuccessPage({super.key, this.userName});
@@ -40,7 +40,7 @@ class SuccessPage extends StatelessWidget {
             SizedBox(width: displayWidth(context)/1.4, child: CustomButton(onPressed: (){
               studentController.authPageTitle.value = AppStrings.signIn;
 
-              Get.off(Home());
+              Get.off(OnboardingPage());
 
 
             }, text: "Done", textColor: AppColors.white, fontSize: 18)),

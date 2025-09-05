@@ -8,12 +8,12 @@ import 'package:sign_class/features/details/data/models/course_model.dart';
 import 'package:sign_class/features/details/data/models/tutor_model.dart';
 import 'package:sign_class/features/details/data/repos/courses_repo_impl.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
-import 'package:sign_class/features/home/presentation/controllers/home_controller.dart';
+import 'package:sign_class/features/onboarding/presentation/controllers/onboarding_controller.dart';
 
 class StudentController extends GetxController {
   static StudentController get instance => Get.find();
 
-  final homeController = HomeController.instance;
+  final onboardingController = OnboardingController.instance;
 
   final studentRepo = StudentRepoImpl();
 
@@ -30,11 +30,6 @@ class StudentController extends GetxController {
 
   void onTextChanged(String input) async {
     filteredNames.value = await studentRepo.getStudentsByNamePrefix(input);
-
-    // filteredNames.value =
-    //     allNames
-    //         .where((name) => name.toLowerCase().startsWith(input.toLowerCase()))
-    //         .toList();
   }
 
   void onNameSelected(String name) {
@@ -52,7 +47,7 @@ class StudentController extends GetxController {
     );
 
     await studentRepo.createStudent(studentModel, course, tutor);
-    homeController.numOfSignedInStudents.value++;
+    onboardingController.numOfSignedInStudents.value++;
 
     Get.to(SuccessPage(userName: nameTEC.text));
 
@@ -77,7 +72,7 @@ class StudentController extends GetxController {
     };
 
     await studentRepo.updateUser(data);
-    homeController.numOfSignedInStudents.value++;
+    onboardingController.numOfSignedInStudents.value++;
 
     Get.to(SuccessPage(userName: nameTEC.text));
 
@@ -133,7 +128,7 @@ class StudentController extends GetxController {
 
     studentRepo.deleteUser(querySnapshot!.docs.first.id);
 
-    homeController.numOfSignedInStudents.value--;
+    onboardingController.numOfSignedInStudents.value--;
 
     Get.to(SuccessPage(userName: nameTEC.text));
   }
