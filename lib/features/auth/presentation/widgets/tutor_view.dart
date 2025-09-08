@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
+import 'package:sign_class/core/global/custom_alert_dialog.dart';
 import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/global/custom_snackbar.dart';
 import 'package:sign_class/core/global/custom_text.dart';
@@ -26,6 +27,17 @@ class _TutorViewState extends State<TutorView> {
   TimeOfDay? startTime;
   TimeOfDay? endTime;
 
+  // Correct weekday order
+  final List<String> weekdayOrder = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
+
   Future<void> pickStartTime(BuildContext context) async {
     final picked = await showTimePicker(
       context: context,
@@ -42,22 +54,33 @@ class _TutorViewState extends State<TutorView> {
     if (picked != null) setState(() => endTime = picked);
   }
 
-  void setAvailability() async{
+  void setAvailability() async {
     if (selectedDay != null && startTime != null && endTime != null) {
       await tutorController.setSchedule(selectedDay!, startTime!, endTime!);
       CustomSnackBar.successSnackBar(
         body:
-            "Availability set for $selectedDay from ${startTime!.format(context)} to ${endTime!.format(context)}",
+        "Availability set for $selectedDay from ${startTime!.format(
+            context)} to ${endTime!.format(context)}",
       );
     }
   }
 
+  var sortedEntries = <MapEntry<String, dynamic>>[];
+
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Container(
-        child: Obx(
-          () => Column(
+      child: Obx(
+            () {
+          if (tutorController.availability.isNotEmpty) {
+            // Sort the map into a list of entries based on weekday order
+            sortedEntries = tutorController.availability.entries.toList()
+              ..sort((a, b) =>
+                  weekdayOrder.indexOf(a.key.toLowerCase())
+                      .compareTo(weekdayOrder.indexOf(b.key.toLowerCase())));
+          }
+
+          return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Center(
@@ -128,15 +151,15 @@ class _TutorViewState extends State<TutorView> {
                 tutorController.students.isEmpty
                     ? CustomText(text: "None")
                     : ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: tutorController.students.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(tutorController.students[index].name!),
-                          textColor: Colors.white,
-                        );
-                      },
-                    ),
+                  shrinkWrap: true,
+                  itemCount: tutorController.students.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(tutorController.students[index].name!),
+                      textColor: Colors.white,
+                    );
+                  },
+                ),
 
                 const SizedBox(height: 20),
                 const Text(
@@ -149,12 +172,12 @@ class _TutorViewState extends State<TutorView> {
                   hint: const Text("Select Day"),
                   value: selectedDay,
                   items:
-                      ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-                          .map(
-                            (day) =>
-                                DropdownMenuItem(value: day, child: Text(day)),
-                          )
-                          .toList(),
+                  ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+                      .map(
+                        (day) =>
+                        DropdownMenuItem(value: day, child: Text(day)),
+                  )
+                      .toList(),
                   onChanged: (value) => setState(() => selectedDay = value),
                 ),
 
@@ -168,9 +191,9 @@ class _TutorViewState extends State<TutorView> {
                     onPressed: () => pickStartTime(context),
                     child: CustomText(
                       text:
-                          startTime == null
-                              ? "Pick Start Time"
-                              : "Start: ${startTime!.format(context)}",
+                      startTime == null
+                          ? "Pick Start Time"
+                          : "Start: ${startTime!.format(context)}",
                       color: AppColors.purple,
                     ),
                   ),
@@ -184,9 +207,9 @@ class _TutorViewState extends State<TutorView> {
                     onPressed: () => pickEndTime(context),
                     child: CustomText(
                       text:
-                          endTime == null
-                              ? "Pick End Time"
-                              : "End: ${endTime!.format(context)}",
+                      endTime == null
+                          ? "Pick End Time"
+                          : "End: ${endTime!.format(context)}",
                       color: AppColors.purple,
                     ),
                   ),
@@ -202,10 +225,47 @@ class _TutorViewState extends State<TutorView> {
                     child: CustomText(text: "Set", color: AppColors.white),
                   ),
                 ),
+                SizedBox(height: 4),
+
+                tutorController.availability.isNotEmpty ?
+                SizedBox(
+                  width: 200,
+                  child: CustomButton(
+                    bgColor: AppColors.gold,
+                    onPressed: () {
+                      Get.dialog(CustomAlertDialog(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Text("My availability")],
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: sortedEntries.map((e) {
+                              var heading = e.key;
+                              var body = e.value;
+
+                              return Column(
+                                children: [
+                                  Text(
+                                    heading[0].toUpperCase() + heading.substring(1), // Capitalize
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                  ),
+                                  Text(
+                                    body.toString(),
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          )));
+                    },
+                    child: CustomText(text: "View", color: AppColors.white),
+                  ),
+                ) : SizedBox()
               ],
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -51,7 +51,7 @@ class _StudentDetailsViewState extends State<StudentDetailsView> {
 
         SizedBox(height: 16),
 
-        if(detailsController.selectedCourse != null)
+        if(detailsController.selectedCourse != null && detailsController.selectedCourse!.value.assignedTutors != null)
           TutorField(detailsController: detailsController),
 
         SizedBox(height: 24),

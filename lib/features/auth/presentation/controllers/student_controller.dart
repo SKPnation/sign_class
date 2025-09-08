@@ -24,17 +24,16 @@ class StudentController extends GetxController {
 
   var register = false.obs;
 
-  var filteredNames = <Student>[].obs;
+  Rx<Student?>? filteredEmail;
 
   QuerySnapshot<Object?>? querySnapshot;
 
   void onTextChanged(String input) async {
-    filteredNames.value = await studentRepo.getStudentsByNamePrefix(input);
-  }
+    filteredEmail!.value = await studentRepo.getStudentInfo(input);
 
-  void onNameSelected(String name) {
-    nameTEC.text = name;
-    filteredNames.clear();
+    if(filteredEmail != null && filteredEmail?.value != null){
+      nameTEC.text = filteredEmail!.value!.name!;
+    }
   }
 
   addStudent(Course course, Tutor? tutor) async {
@@ -60,7 +59,7 @@ class StudentController extends GetxController {
   Future signIn(Course course) async {
     querySnapshot =
         await studentRepo.studentsCollection
-            .where('name', isEqualTo: nameTEC.text)
+            .where('email', isEqualTo: emailTEC.text)
             .limit(1)
             .get();
 
@@ -74,7 +73,7 @@ class StudentController extends GetxController {
     await studentRepo.updateUser(data);
     onboardingController.numOfSignedInStudents.value++;
 
-    Get.to(SuccessPage(userName: nameTEC.text));
+    Get.to(SuccessPage(userName: querySnapshot!.docs.first['name']));
 
     nameTEC.clear();
     emailTEC.clear();
@@ -118,7 +117,7 @@ class StudentController extends GetxController {
   Future signOut() async {
     querySnapshot =
         await studentRepo.studentsCollection
-            .where('name', isEqualTo: nameTEC.text)
+            .where('email', isEqualTo: emailTEC.text)
             .limit(1)
             .get();
 
@@ -130,7 +129,7 @@ class StudentController extends GetxController {
 
     onboardingController.numOfSignedInStudents.value--;
 
-    Get.to(SuccessPage(userName: nameTEC.text));
+    Get.to(SuccessPage(userName: querySnapshot!.docs.first['name']));
   }
 
   bool isPvamuEmail(String email) {

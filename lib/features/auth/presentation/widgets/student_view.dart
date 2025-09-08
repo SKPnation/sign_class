@@ -18,7 +18,7 @@ class StudentView extends StatefulWidget {
 class _StudentViewState extends State<StudentView> {
   StudentController studentController = Get.put(StudentController());
 
-  var existsByName = true;
+  var existsByEmail = true;
   var emailErrorText = "";
 
   @override
@@ -27,16 +27,16 @@ class _StudentViewState extends State<StudentView> {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         FocusScope.of(context).unfocus(); // dismiss keyboard
-        setState(() {
-          studentController.filteredNames.clear(); // hide suggestion box
-        });
+        // setState(() {
+        //   studentController.filteredEmails.clear(); // hide suggestion box
+        // });
       },
       child: Material(
         child: Container(
           padding: EdgeInsets.all(24),
           color: AppColors.purple,
           child: Obx(
-                () => Column(
+            () => Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Center(
@@ -58,95 +58,92 @@ class _StudentViewState extends State<StudentView> {
                   ),
                 ),
                 SizedBox(height: 24),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: displayWidth(context) / 1.4,
+                      child: TextField(
+                        controller: studentController.emailTEC,
 
-                SizedBox(
-                  width: displayWidth(context) / 1.4,
-                  child: TextField(
-                    controller: studentController.nameTEC,
-                    onChanged: studentController.onTextChanged,
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelText: 'Name',
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      floatingLabelAlignment: FloatingLabelAlignment.start,
-                      // aligns to the top-left
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
+                        onChanged: (value) async {
+                          if (!studentController.isPvamuEmail(value)) {
+                            emailErrorText = AppStrings.mustBePvamuEmail;
+                          } else {
+                            emailErrorText = "";
+                          }
 
-                if (existsByName == false)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: displayWidth(context) / 1.4,
-                        child: TextField(
-                          controller: studentController.emailTEC,
-                          onChanged: (value) {
-                            if (!studentController.isPvamuEmail(value)) {
-                              emailErrorText = AppStrings.mustBePvamuEmail;
-                            } else {
-                              emailErrorText = "";
-                            }
+                          studentController.onTextChanged(value);
 
-                            setState(() {});
-                          },
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            labelText: 'Email',
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            floatingLabelAlignment:
-                            FloatingLabelAlignment.start,
-                            // aligns to the top-left
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                          setState(() {});
+                        },
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Email',
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          floatingLabelAlignment: FloatingLabelAlignment.start,
+                          // aligns to the top-left
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                      if (emailErrorText.isNotEmpty)
-                        Text(
-                          emailErrorText,
-                          style: TextStyle(color: Colors.red),
+                    ),
+                    if (emailErrorText.isNotEmpty)
+                      Text(emailErrorText, style: TextStyle(color: Colors.red)),
+                  ],
+                ),
+
+                if((studentController.filteredEmail != null && studentController.filteredEmail?.value != null) || !existsByEmail )
+                  SizedBox(
+                    width: displayWidth(context) / 1.4,
+                    child: TextField(
+                      controller: studentController.nameTEC,
+                      onChanged: studentController.onTextChanged,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: 'Name',
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                        floatingLabelAlignment: FloatingLabelAlignment.start,
+                        // aligns to the top-left
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                    ],
+                      ),
+                    ),
                   ),
 
-                Obx(() {
-                  if (studentController.filteredNames.isNotEmpty) {
-                    return Container(
-                      margin: EdgeInsets.only(top: 10),
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ListView.builder(
-                        itemCount: studentController.filteredNames.length,
-                        itemBuilder: (context, index) {
-                          var model = studentController.filteredNames[index];
-                          return ListTile(
-                            title: Text(model.name!),
-                            onTap:
-                                () => studentController.onNameSelected(
-                              model.name!,
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }
-                  else {
-                    return SizedBox.shrink();
-                  }
-                }),
+                // Obx(() {
+                //   if (studentController.filteredEmails.isNotEmpty) {
+                //     return Container(
+                //       margin: EdgeInsets.only(top: 10),
+                //       height: 120,
+                //       decoration: BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius: BorderRadius.circular(10),
+                //       ),
+                //       child: ListView.builder(
+                //         itemCount: studentController.filteredEmails.length,
+                //         itemBuilder: (context, index) {
+                //           var model = studentController.filteredEmails[index];
+                //           return ListTile(
+                //             title: Text(model.name!),
+                //             onTap:
+                //                 () => studentController.onEmailSelected(
+                //                   model.name!,
+                //                 ),
+                //           );
+                //         },
+                //       ),
+                //     );
+                //   } else {
+                //     return SizedBox.shrink();
+                //   }
+                // }),
                 SizedBox(height: 24),
 
                 SizedBox(
@@ -157,19 +154,31 @@ class _StudentViewState extends State<StudentView> {
                           AppStrings.signOut) {
                         await studentController.signOut();
                       } else {
-                        existsByName =
-                        await studentController.doesUserExistByName();
+                        // existsByName =
+                        //     await studentController.doesUserExistByName();
+                        //
+                        // if (!existsByName &&
+                        //     studentController.emailTEC.text.isNotEmpty &&
+                        //     studentController.isPvamuEmail(
+                        //       studentController.emailTEC.text,
+                        //     )) {
+                        //   await studentController.doesUserExistByEmail();
+                        //
+                        //   Get.toNamed(Routes.detailsPageRoute);
+                        // } else if (existsByName) {
+                        //   Get.toNamed(Routes.detailsPageRoute);
+                        // }
 
-                        if (!existsByName &&
+                        existsByEmail =
+                        await studentController.doesUserExistByEmail();
+
+                        if (studentController.nameTEC.text.isNotEmpty &&
                             studentController.emailTEC.text.isNotEmpty &&
                             studentController.isPvamuEmail(
                               studentController.emailTEC.text,
                             )) {
-                          await studentController.doesUserExistByEmail();
-
                           Get.toNamed(Routes.detailsPageRoute);
-
-                        } else if (existsByName) {
+                        }else if(existsByEmail){
                           Get.toNamed(Routes.detailsPageRoute);
                         }
 
@@ -177,20 +186,20 @@ class _StudentViewState extends State<StudentView> {
                       }
                     },
                     text:
-                    studentController.authPageTitle.value ==
-                        AppStrings.signOut
-                        ? "Sign out"
-                        : "Next",
+                        studentController.authPageTitle.value ==
+                                AppStrings.signOut
+                            ? "Sign out"
+                            : "Next",
                     textColor:
-                    studentController.authPageTitle.value !=
-                        AppStrings.signOut
-                        ? AppColors.purple
-                        : AppColors.white,
+                        studentController.authPageTitle.value !=
+                                AppStrings.signOut
+                            ? AppColors.purple
+                            : AppColors.white,
                     bgColor:
-                    studentController.authPageTitle.value ==
-                        AppStrings.signOut
-                        ? Colors.red
-                        : AppColors.gold,
+                        studentController.authPageTitle.value ==
+                                AppStrings.signOut
+                            ? Colors.red
+                            : AppColors.gold,
                     fontSize: 18,
                   ),
                 ),

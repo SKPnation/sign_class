@@ -4,8 +4,8 @@ import 'package:sign_class/features/details/data/models/tutor_model.dart';
 import 'package:sign_class/features/details/domain/repos/courses_repo.dart';
 
 class CoursesRepoImpl extends CoursesRepo {
-  final CollectionReference coursesCollection = FirebaseFirestore.instance
-      .collection('courses');
+  final CollectionReference coursesCollection =
+  FirebaseFirestore.instance.collection('courses');
 
   @override
   Future<List<Course>> getCoursesWithTutors() async {
@@ -14,25 +14,27 @@ class CoursesRepoImpl extends CoursesRepo {
     final coursesSnapshot = await coursesCollection.get();
 
     for (var courseDoc in coursesSnapshot.docs) {
-      var course = Course.fromMap(
-        courseDoc.data() as Map<String, dynamic>,
-        courseDoc.id,
-      );
+      final data = courseDoc.data() as Map<String, dynamic>;
 
-      // Resolve assigned tutor references
-      List<dynamic> assignedRefs = courseDoc['tutors'] ?? [];
+      var course = Course.fromMap(data, courseDoc.id);
+
+      // Resolve assigned tutor references safely
       List<Tutor> tutors = [];
 
-      for (var ref in assignedRefs) {
-        if (ref is DocumentReference) {
-          final tutorSnap = await ref.get();
-          if (tutorSnap.exists) {
-            tutors.add(
-              Tutor.fromMap({
-                'id': tutorSnap.id,
-                ...tutorSnap.data() as Map<String, dynamic>,
-              }),
-            );
+      if (data.containsKey('tutors') && data['tutors'] is List) {
+        final assignedRefs = data['tutors'] as List<dynamic>;
+
+        for (var ref in assignedRefs) {
+          if (ref is DocumentReference) {
+            final tutorSnap = await ref.get();
+            if (tutorSnap.exists) {
+              tutors.add(
+                Tutor.fromMap({
+                  'id': tutorSnap.id,
+                  ...tutorSnap.data() as Map<String, dynamic>,
+                }),
+              );
+            }
           }
         }
       }

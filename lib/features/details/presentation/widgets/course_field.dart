@@ -65,41 +65,46 @@ class _CourseFieldState extends State<CourseField> {
             selectedCourseId = null;
           }
 
-          return DropdownButtonFormField<String>(
-            value: selectedCourseId,
-            items:
-            courses.map((course) {
-              return DropdownMenuItem<String>(
-                value: course.id,
-                child: Text("${course.category} - ${course.name}"),
-              );
-            }).toList(),
-            onChanged: (String? value) {
-              setState(() {
-                if (value != null) {
-                  final course = courses.firstWhere(
-                        (course) => course.id == value,
-                  );
-                  if (widget.detailsController.selectedCourse == null) {
-                    widget.detailsController.selectedCourse = Rx<Course>(
-                      course,
-                    );
-                  } else {
-                    widget.detailsController.selectedCourse!.value = course;
-                  }
-                }
-              });
+          return SizedBox(
+            width: displayWidth(context) / 1.4,
 
-              widget.onChanged!();
-            },
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: 'Select course',
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              floatingLabelAlignment: FloatingLabelAlignment.start,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+            child: DropdownButtonFormField<String>(
+              isExpanded: true, // 👈 important
+              value: selectedCourseId,
+              items:
+              courses.map((course) {
+                return DropdownMenuItem<String>(
+                  value: course.id,
+                  child: Text("${course.code} - ${course.name}"),
+                );
+              }).toList(),
+              onChanged: (String? value) {
+                setState(() {
+                  if (value != null) {
+                    final course = courses.firstWhere(
+                          (course) => course.id == value,
+                    );
+                    if (widget.detailsController.selectedCourse == null) {
+                      widget.detailsController.selectedCourse = Rx<Course>(
+                        course,
+                      );
+                    } else {
+                      widget.detailsController.selectedCourse!.value = course;
+                    }
+                  }
+                });
+
+                widget.onChanged!();
+              },
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Select course',
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                floatingLabelAlignment: FloatingLabelAlignment.start,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
           );

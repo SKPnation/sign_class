@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sign_class/core/global/custom_alert_dialog.dart';
 import 'package:sign_class/core/global/custom_snackbar.dart';
 import 'package:sign_class/core/global/success_page.dart';
 import 'package:sign_class/features/auth/data/models/student_model.dart';
@@ -11,23 +12,23 @@ import 'package:sign_class/features/onboarding/presentation/controllers/onboardi
 
 class TutorController extends GetxController {
   static TutorController get instance => Get.find();
+  final onboardingController = OnboardingController.instance;
+
   final tutorRepo = TutorRepoImpl();
   final studentRepo = StudentRepoImpl();
 
   DocumentReference<Map<String, dynamic>> tutorUserRef(String userId) =>
       FirebaseFirestore.instance.doc('/tutors/$userId');
-
-  final onboardingController = OnboardingController.instance;
+  QuerySnapshot<Object?>? querySnapshot;
 
   var authPageTitle = "".obs;
   var register = false.obs;
-
-  final TextEditingController emailTEC = TextEditingController();
-
-  QuerySnapshot<Object?>? querySnapshot;
-
   var students = <Student>[].obs;
   var tutor = Rx<Tutor?>(null);
+
+  RxMap<String, dynamic> availability = <String, dynamic>{}.obs;
+
+  final TextEditingController emailTEC = TextEditingController();
 
   Future signIn() async {
     QuerySnapshot<Object?>? studentQuerySnapshot;
@@ -49,6 +50,8 @@ class TutorController extends GetxController {
               )
               .first;
 
+      await getAvailability();
+
       studentQuerySnapshot =
           await studentRepo.studentsCollection
               .where(
@@ -58,25 +61,27 @@ class TutorController extends GetxController {
               .where('time_out', isEqualTo: null)
               .get();
 
-      students.value = await Future.wait(
-        studentQuerySnapshot.docs.map(
-          (doc) async => await Student.fromMapAsync(
-            doc.data() as Map<String, dynamic>,
-            doc.id,
+      if (studentQuerySnapshot.docs.isNotEmpty) {
+        students.value = await Future.wait(
+          studentQuerySnapshot.docs.map(
+            (doc) async => await Student.fromMapAsync(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            ),
           ),
-        ),
-      );
+        );
 
-      var data = {
-        "id": querySnapshot!.docs.first.id,
-        "time_in": DateTime.now(),
-        "time_out": null,
-      };
+        var data = {
+          "id": querySnapshot!.docs.first.id,
+          "time_in": DateTime.now(),
+          "time_out": null,
+        };
 
-      await studentRepo.updateUser(data);
+        await studentRepo.updateUser(data);
+      }
+
       emailTEC.clear();
       students.clear();
-      tutor.value = null;
     }
   }
 
@@ -90,6 +95,8 @@ class TutorController extends GetxController {
     var data = {"id": querySnapshot!.docs.first.id, "time_out": DateTime.now()};
 
     await tutorRepo.updateUser(data);
+
+    tutor.value = null;
 
     Get.to(
       SuccessPage(
@@ -106,19 +113,29 @@ class TutorController extends GetxController {
     String selectedDay,
     TimeOfDay startTime,
     TimeOfDay endTime,
-  ) async{
+  ) async {
     selectedDay = selectedDay.toLowerCase();
     final start = startTime.format(Get.context!); // e.g. "9:30 AM"
     final end = endTime.format(Get.context!);
 
-    var input = {
-      selectedDay : "$start - $end"
-    };
+    var input = {selectedDay: "$start - $end"};
 
-    if(tutor.value != null){
+    if (tutor.value != null) {
       await tutorRepo.setSchedule(input, tutor.value!.id!);
     }
+  }
 
+  Future getAvailability() async {
+    final tutorId = tutor.value?.id;
+
+    if (tutorId == null) {
+      print("Tutor or tutor ID is null, cannot fetch availability.");
+      return;
+    }
+
+    final data = await tutorRepo.getMyAvailability(tutorId);
+
+    availability.value = data;
   }
 
   bool isPvamuEmail(String email) {

@@ -24,7 +24,7 @@ class StudentRepoImpl extends StudentRepo {
     userMap["course"] = CoursesRepoImpl().coursesCollection.doc(course.id!);
     userMap["tutor"] = tutor == null ? null : tutorsCollection.doc(tutor.id!);
 
-    await studentsCollection.add(userMap);
+    await studentsCollection.doc(userMap['id']).set(userMap);
 
     List<Map<String, dynamic>> students = getStore.get(_Keys.students) ?? [];
 
@@ -53,22 +53,22 @@ class StudentRepoImpl extends StudentRepo {
     await studentsCollection.doc(fields['id']).update(data);
   }
 
-  @override
-  Future<List<Student>> getStudentsByNamePrefix(String prefix) async {
-    final querySnapshot =
-        await studentsCollection
-            .orderBy('name_lower')
-            .startAt([prefix.toLowerCase()])
-            .endAt(['${prefix.toLowerCase()}\uf8ff'])
-            .get();
-
-    return await Future.wait(
-      querySnapshot.docs.map(
-        (doc) =>
-            Student.fromMapAsync(doc.data() as Map<String, dynamic>, doc.id),
-      ),
-    );
-  }
+  // @override
+  // Future<List<Student>> getStudentsByNamePrefix(String prefix) async {
+  //   final querySnapshot =
+  //       await studentsCollection
+  //           .orderBy('name_lower')
+  //           .startAt([prefix.toLowerCase()])
+  //           .endAt(['${prefix.toLowerCase()}\uf8ff'])
+  //           .get();
+  //
+  //   return await Future.wait(
+  //     querySnapshot.docs.map(
+  //       (doc) =>
+  //           Student.fromMapAsync(doc.data() as Map<String, dynamic>, doc.id),
+  //     ),
+  //   );
+  // }
 
   @override
   Future<int> getTotalSignedInStudents() async {
@@ -94,5 +94,27 @@ class StudentRepoImpl extends StudentRepo {
     // print(total);
 
     return total;
+  }
+
+  @override
+  Future<Student?> getStudentInfo(String email) async{
+    // Query Firestore for the document where email matches exactly
+    final querySnapshot = await studentsCollection
+        .where("email", isEqualTo: email)
+        .limit(1) // stop after the first match
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      return null; // No match found yet
+    }
+
+    final doc = querySnapshot.docs.first;
+
+    // Convert Firestore data to Student model
+    return await Student.fromMapAsync(
+      doc.data() as Map<String, dynamic>,
+      doc.id,
+    );
+
   }
 }

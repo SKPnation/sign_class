@@ -30,4 +30,18 @@ class TutorRepoImpl extends TutorRepo {
       await docRef.set(data);
     }
   }
+
+  @override
+  Future getMyAvailability(String tutorId) async{
+    final docRef = availabilityCollection.doc(tutorId);
+    final docSnapshot = await docRef.get();
+    final result = docSnapshot.data();
+
+    if (result != null && result is Map<String, dynamic>) {
+      return result;
+    }
+    return {};
+  }
+
+
 }
