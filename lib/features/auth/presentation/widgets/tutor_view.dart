@@ -155,7 +155,7 @@ class _TutorViewState extends State<TutorView> {
                   itemCount: tutorController.students.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(tutorController.students[index].name!),
+                      title: Text("${tutorController.students[index].fName!} ${tutorController.students[index].lName!}"),
                       textColor: Colors.white,
                     );
                   },

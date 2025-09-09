@@ -6,6 +6,7 @@ import 'package:sign_class/core/global/custom_text.dart';
 import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/helpers/navigation/app_routes.dart';
 import 'package:sign_class/core/theme/colors.dart';
+import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 import 'package:sign_class/features/onboarding/presentation/controllers/onboarding_controller.dart';
 
@@ -37,83 +38,117 @@ class _OnboardingPageState extends State<OnboardingPage> {
         padding: EdgeInsets.all(24),
         color: AppColors.purple,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(
-              child: Image.asset(
-                ImageElements.pvamuLogo,
-                width: 180,
-                height: 160,
-                fit: BoxFit.contain, // Ensure image fits
-              ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Obx(() {
+                if (onboardingController.currentUserType.value !=
+                    AppStrings.tutor) {
+                  return Text(
+                    "${onboardingController.numOfSignedInStudents.value} students still signed in",
+                    style: TextStyle(
+                      fontSize: AppFonts.baseSize,
+                      color: AppColors.white,
+                    ),
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              }),
             ),
-
-            Obx(
-              () => CustomText(
-                text: onboardingController.currentUserType.value,
-                size: 28,
-                color: AppColors.white,
-              ),
-            ),
-
-            SizedBox(height: 16),
-
-            SizedBox(
-              width: 300,
-              child: CustomButton(
-                onPressed: () {
-                  studentController.authPageTitle.value = AppStrings.signIn;
-                  Get.toNamed(Routes.authenticationPageRoute);
-                },
-                text: "Sign In",
-                textColor: AppColors.purple,
-              ),
-            ),
-            SizedBox(height: 8),
-            SizedBox(
-              width: 300,
-              child: CustomButton(
-                onPressed: () async {
-                  studentController.authPageTitle.value = AppStrings.signOut;
-                  Get.toNamed(Routes.authenticationPageRoute);
-                },
-                text: "Sign Out",
-                textColor: AppColors.purple,
-              ),
-            ),
-
-            SizedBox(height: 16),
-            SizedBox(
-              width: 300,
-              child: CustomButton(
-                bgColor: AppColors.white,
-                onPressed: () async {
-                  //..
-                },
-                text:
-                    onboardingController.currentUserType.value == AppStrings.tutor
-                        ? AppStrings.isNotTutor
-                        : AppStrings.isTutor,
-                textColor: AppColors.purple,
-              ),
-            ),
-
+            // 👇 Pushes everything else to the bottom
             SizedBox(height: 80),
 
-            Obx(() {
-              if (onboardingController.currentUserType.value != AppStrings.tutor) {
-                return Text(
-                  "${onboardingController.numOfSignedInStudents.value}",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+            Column(
+              children: [
+                Center(
+                  child: Image.asset(
+                    ImageElements.pvamuLogo,
+                    width: 180,
+                    height: 160,
+                    fit: BoxFit.contain, // Ensure image fits
+                  ),
+                ),
+
+                const SizedBox(height: 60),
+
+
+                Obx(
+                  () => CustomText(
+                    text: "${onboardingController.currentUserType.value} login",
+                    size: 18,
                     color: AppColors.white,
                   ),
-                );
-              } else {
-                return SizedBox.shrink();
-              }
-            }),
+                ),
+
+                SizedBox(height: 16),
+
+                SizedBox(
+                  width: 300,
+                  child: CustomButton(
+                    onPressed: () {
+                      studentController.authPageTitle.value = AppStrings.signIn;
+                      Get.toNamed(Routes.authenticationPageRoute);
+                    },
+                    text: "Sign In",
+                    textColor: AppColors.purple,
+                  ),
+                ),
+                SizedBox(height: 8),
+                SizedBox(
+                  width: 300,
+                  child: CustomButton(
+                    onPressed: () async {
+                      studentController.authPageTitle.value =
+                          AppStrings.signOut;
+                      Get.toNamed(Routes.authenticationPageRoute);
+                    },
+                    text: "Sign Out",
+                    textColor: AppColors.purple,
+                  ),
+                ),
+
+                SizedBox(height: 24),
+
+                RichText(
+                  text: TextSpan(
+                    text: "If you are a ${onboardingController.currentUserType.value == AppStrings.tutor ? "STUDENT" : "TUTOR"}, 👉",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: " click here",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // SizedBox(
+                //   width: 300,
+                //   child: CustomButton(
+                //     bgColor: AppColors.white,
+                //     onPressed: () async {
+                //       //..
+                //     },
+                //     text:
+                //         onboardingController.currentUserType.value ==
+                //                 AppStrings.tutor
+                //             ? AppStrings.isNotTutor
+                //             : AppStrings.isTutor,
+                //     textColor: AppColors.purple,
+                //   ),
+                // ),
+
+                SizedBox(height: 80),
+              ],
+            ),
           ],
         ),
       ),

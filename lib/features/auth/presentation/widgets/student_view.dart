@@ -6,6 +6,7 @@ import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/helpers/navigation/app_routes.dart';
 import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
+import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 
 class StudentView extends StatefulWidget {
@@ -48,7 +49,6 @@ class _StudentViewState extends State<StudentView> {
                   ),
                 ),
                 SizedBox(height: 80),
-
                 Text(
                   studentController.authPageTitle.value,
                   style: TextStyle(
@@ -65,7 +65,6 @@ class _StudentViewState extends State<StudentView> {
                       width: displayWidth(context) / 1.4,
                       child: TextField(
                         controller: studentController.emailTEC,
-
                         onChanged: (value) async {
                           if (!studentController.isPvamuEmail(value)) {
                             emailErrorText = AppStrings.mustBePvamuEmail;
@@ -74,19 +73,44 @@ class _StudentViewState extends State<StudentView> {
                           }
 
                           studentController.onTextChanged(value);
-
                           setState(() {});
                         },
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
                           labelText: 'Email',
+                          labelStyle: TextStyle(color: AppColors.grey[200]),
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
                           floatingLabelAlignment: FloatingLabelAlignment.start,
-                          // aligns to the top-left
+
+                          // define a single border style to reuse
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: AppColors.white,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: AppColors.white,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: AppColors.white,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(width: 1, color: Colors.red),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(width: 1, color: Colors.red),
                           ),
                         ),
                       ),
@@ -96,22 +120,105 @@ class _StudentViewState extends State<StudentView> {
                   ],
                 ),
 
-                if((studentController.filteredEmail != null && studentController.filteredEmail?.value != null) || !existsByEmail )
-                  SizedBox(
+                if ((studentController.filteredEmail != null &&
+                    studentController.filteredEmail?.value != null) ||
+                    !existsByEmail &&
+                        studentController.isPvamuEmail(
+                          studentController.emailTEC.text,
+                        ))
+                  Container(
+                    margin: EdgeInsets.only(top: 12),
                     width: displayWidth(context) / 1.4,
                     child: TextField(
-                      controller: studentController.nameTEC,
+                      controller: studentController.firstNameTEC,
                       onChanged: studentController.onTextChanged,
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelText: 'Name',
+                        labelText: 'First name',
+                        labelStyle: TextStyle(color: AppColors.grey[200]),
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                         floatingLabelAlignment: FloatingLabelAlignment.start,
-                        // aligns to the top-left
+                        // define a single border style to reuse
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            width: 1,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            width: 1,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            width: 1,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(width: 1, color: Colors.red),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(width: 1, color: Colors.red),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                if ((studentController.filteredEmail != null &&
+                        studentController.filteredEmail?.value != null) ||
+                    !existsByEmail &&
+                        studentController.isPvamuEmail(
+                          studentController.emailTEC.text,
+                        ))
+                  Container(
+                    margin: EdgeInsets.only(top: 12),
+                    width: displayWidth(context) / 1.4,
+                    child: TextField(
+                      controller: studentController.lastNameTEC,
+                      onChanged: studentController.onTextChanged,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: 'Last name',
+                        labelStyle: TextStyle(color: AppColors.grey[200]),
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                        floatingLabelAlignment: FloatingLabelAlignment.start,
+                        // define a single border style to reuse
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            width: 1,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            width: 1,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            width: 1,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(width: 1, color: Colors.red),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(width: 1, color: Colors.red),
                         ),
                       ),
                     ),
@@ -170,15 +277,16 @@ class _StudentViewState extends State<StudentView> {
                         // }
 
                         existsByEmail =
-                        await studentController.doesUserExistByEmail();
+                            await studentController.doesUserExistByEmail();
 
-                        if (studentController.nameTEC.text.isNotEmpty &&
+                        if (studentController.firstNameTEC.text.isNotEmpty &&
+                            studentController.lastNameTEC.text.isNotEmpty &&
                             studentController.emailTEC.text.isNotEmpty &&
                             studentController.isPvamuEmail(
                               studentController.emailTEC.text,
                             )) {
                           Get.toNamed(Routes.detailsPageRoute);
-                        }else if(existsByEmail){
+                        } else if (existsByEmail) {
                           Get.toNamed(Routes.detailsPageRoute);
                         }
 
@@ -200,10 +308,10 @@ class _StudentViewState extends State<StudentView> {
                                 AppStrings.signOut
                             ? Colors.red
                             : AppColors.gold,
-                    fontSize: 18,
+                    fontSize: AppFonts.baseSize,
                   ),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 8),
                 SizedBox(
                   width: displayWidth(context) / 1.4,
                   child: CustomButton(
@@ -212,7 +320,7 @@ class _StudentViewState extends State<StudentView> {
                     },
                     text: "Go back",
                     textColor: AppColors.purple,
-                    fontSize: 18,
+                      fontSize: AppFonts.baseSize,
                   ),
                 ),
               ],

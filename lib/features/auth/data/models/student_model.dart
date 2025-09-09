@@ -7,7 +7,8 @@ import 'package:sign_class/features/details/data/repos/courses_repo_impl.dart';
 
 class Student {
   final String? id;
-  final String? name;
+  final String? fName;
+  final String? lName;
   final String? nameLower;
   final String? email;
   final Course? course;
@@ -18,7 +19,8 @@ class Student {
 
   Student({
     this.id,
-    this.name,
+    this.fName,
+    this.lName,
     this.nameLower,
     this.email,
     this.course,
@@ -38,7 +40,8 @@ class Student {
 
     return Student(
       id: docId,
-      name: map['name'] ?? '',
+      fName: map['f_name'] ?? '',
+      lName: map['l_name'] ?? '',
       email: map['email'] ?? '',
       createdAt: (map['created_at'] as Timestamp).toDate(),
       timeIn: map['time_in'] != null ? (map['time_in'] as Timestamp).toDate() : null,
@@ -51,8 +54,9 @@ class Student {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name,
-      'name_lower': name?.toLowerCase(),
+      'f_name': fName,
+      'l_name': lName,
+      'name_lower': "${fName?.toLowerCase()} ${lName?.toLowerCase()}",
       'email': email,
       'created_at': Timestamp.fromDate(createdAt!),
       'time_in': timeIn != null ? Timestamp.fromDate(timeIn!) : null,

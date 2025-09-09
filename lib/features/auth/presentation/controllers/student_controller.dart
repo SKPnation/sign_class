@@ -19,7 +19,8 @@ class StudentController extends GetxController {
 
   var authPageTitle = "".obs;
 
-  final TextEditingController nameTEC = TextEditingController();
+  final TextEditingController firstNameTEC = TextEditingController();
+  final TextEditingController lastNameTEC = TextEditingController();
   final TextEditingController emailTEC = TextEditingController();
 
   var register = false.obs;
@@ -32,14 +33,16 @@ class StudentController extends GetxController {
     filteredEmail!.value = await studentRepo.getStudentInfo(input);
 
     if(filteredEmail != null && filteredEmail?.value != null){
-      nameTEC.text = filteredEmail!.value!.name!;
+      firstNameTEC.text = filteredEmail!.value!.fName!;
+      lastNameTEC.text = filteredEmail!.value!.lName!;
     }
   }
 
   addStudent(Course course, Tutor? tutor) async {
     Student studentModel = Student(
       id: studentRepo.studentsCollection.doc().id,
-      name: nameTEC.text,
+      fName: firstNameTEC.text,
+      lName: lastNameTEC.text,
       email: emailTEC.text,
       createdAt: DateTime.now(),
       timeIn: DateTime.now(),
@@ -48,9 +51,10 @@ class StudentController extends GetxController {
     await studentRepo.createStudent(studentModel, course, tutor);
     onboardingController.numOfSignedInStudents.value++;
 
-    Get.to(SuccessPage(userName: nameTEC.text));
+    Get.to(SuccessPage(userName: "${firstNameTEC.text} ${lastNameTEC.text}"));
 
-    nameTEC.clear();
+    firstNameTEC.clear();
+    lastNameTEC.clear();
     emailTEC.clear();
     DetailsController.instance.whyTEC.clear();
     DetailsController.instance.selectedCourse = null;
@@ -75,7 +79,8 @@ class StudentController extends GetxController {
 
     Get.to(SuccessPage(userName: querySnapshot!.docs.first['name']));
 
-    nameTEC.clear();
+    firstNameTEC.clear();
+    lastNameTEC.clear();
     emailTEC.clear();
     DetailsController.instance.whyTEC.clear();
     DetailsController.instance.selectedCourse = null;
@@ -85,7 +90,7 @@ class StudentController extends GetxController {
     var exists = false;
     querySnapshot =
         await studentRepo.studentsCollection
-            .where('name', isEqualTo: nameTEC.text)
+            .where('name', isEqualTo: firstNameTEC.text)
             .limit(1)
             .get();
     exists = querySnapshot!.docs.isNotEmpty;

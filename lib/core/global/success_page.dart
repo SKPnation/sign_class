@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/core/global/custom_button.dart';
+import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
@@ -21,6 +22,9 @@ class SuccessPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset(ImageElements.pvamuLogo, height: 200, width: 200),
+
+            const SizedBox(height: 60),
             Icon(Icons.check_circle_outline, size: 100, color: Colors.green),
             SizedBox(height: 20),
             Text(
