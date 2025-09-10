@@ -37,7 +37,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       child: Container(
         padding: EdgeInsets.all(24),
         color: AppColors.purple,
-        child: Column(
+        child: Stack(
           children: [
             Align(
               alignment: Alignment.topRight,
@@ -56,99 +56,82 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 }
               }),
             ),
-            // 👇 Pushes everything else to the bottom
-            SizedBox(height: 80),
-
-            Column(
-              children: [
-                Center(
-                  child: Image.asset(
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
                     ImageElements.pvamuLogo,
                     width: 180,
                     height: 160,
                     fit: BoxFit.contain, // Ensure image fits
                   ),
-                ),
 
-                const SizedBox(height: 60),
+                  const SizedBox(height: 80),
 
 
-                Obx(
-                  () => CustomText(
-                    text: "${onboardingController.currentUserType.value} login",
-                    size: 18,
-                    color: AppColors.white,
-                  ),
-                ),
-
-                SizedBox(height: 16),
-
-                SizedBox(
-                  width: 300,
-                  child: CustomButton(
-                    onPressed: () {
-                      studentController.authPageTitle.value = AppStrings.signIn;
-                      Get.toNamed(Routes.authenticationPageRoute);
-                    },
-                    text: "Sign In",
-                    textColor: AppColors.purple,
-                  ),
-                ),
-                SizedBox(height: 8),
-                SizedBox(
-                  width: 300,
-                  child: CustomButton(
-                    onPressed: () async {
-                      studentController.authPageTitle.value =
-                          AppStrings.signOut;
-                      Get.toNamed(Routes.authenticationPageRoute);
-                    },
-                    text: "Sign Out",
-                    textColor: AppColors.purple,
-                  ),
-                ),
-
-                SizedBox(height: 24),
-
-                RichText(
-                  text: TextSpan(
-                    text: "If you are a ${onboardingController.currentUserType.value == AppStrings.tutor ? "STUDENT" : "TUTOR"}, 👉",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+                  Obx(
+                        () => CustomText(
+                      text: "${onboardingController.currentUserType.value} login",
+                      size: 18,
+                      color: AppColors.white,
                     ),
-                    children: [
-                      TextSpan(
-                        text: " click here",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
                   ),
-                ),
 
-                // SizedBox(
-                //   width: 300,
-                //   child: CustomButton(
-                //     bgColor: AppColors.white,
-                //     onPressed: () async {
-                //       //..
-                //     },
-                //     text:
-                //         onboardingController.currentUserType.value ==
-                //                 AppStrings.tutor
-                //             ? AppStrings.isNotTutor
-                //             : AppStrings.isTutor,
-                //     textColor: AppColors.purple,
-                //   ),
-                // ),
+                  SizedBox(height: 24),
 
-                SizedBox(height: 80),
-              ],
-            ),
+                  SizedBox(
+                    width: 300,
+                    child: CustomButton(
+                      onPressed: () {
+                        studentController.authPageTitle.value = AppStrings.signIn;
+                        Get.toNamed(Routes.authenticationPageRoute);
+                      },
+                      text: "Sign In",
+                      textColor: AppColors.purple,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  SizedBox(
+                    width: 300,
+                    child: CustomButton(
+                      onPressed: () async {
+                        studentController.authPageTitle.value =
+                            AppStrings.signOut;
+                        Get.toNamed(Routes.authenticationPageRoute);
+                      },
+                      text: "Sign Out",
+                      textColor: AppColors.purple,
+                    ),
+                  ),
+
+                  SizedBox(height: 24),
+
+                  RichText(
+                    text: TextSpan(
+                      text: "If you are a ${onboardingController.currentUserType.value == AppStrings.tutor ? "STUDENT" : "TUTOR"}, 👉",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: " click here",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 80),
+                ],
+              ),
+            )
           ],
         ),
       ),

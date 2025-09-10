@@ -8,6 +8,9 @@ class DetailsController extends GetxController{
   static final DetailsController instance = Get.find();
 
   CoursesRepoImpl coursesRepo = CoursesRepoImpl();
+  List<String> options = ["Study in ce-commons", "Receive tutoring services"];
+
+  var selectedGoal = "".obs;
 
   // final List<Tutor>? assignedTutors = <Tutor>[];
 

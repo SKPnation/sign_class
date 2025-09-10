@@ -8,13 +8,15 @@ class AppStrings {
   static const signOut = "Sign Out";
 
   static const String slogan = "Excellence Lives Here";
-  static const String appTitle = "CE COMMONS DASHBOARD";
+  static const String appTitle = "CE COMMONS CHECK-IN";
 
   static const student = "Student";
   static const tutor = "Tutor";
 
   static const mustBePvamuEmail = "Must be a PVAMU email address";
 
-  static var isTutor = "I am a tutor";
-  static var isNotTutor = "I am not a tutor";
+  static const isTutor = "I am a tutor";
+  static const isNotTutor = "I am not a tutor";
+
+  static const String noTutors = "No tutor assigned, check the success centre";
 }

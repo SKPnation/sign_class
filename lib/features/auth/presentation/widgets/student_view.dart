@@ -52,277 +52,285 @@ class _StudentViewState extends State<StudentView> {
                 Text(
                   studentController.authPageTitle.value,
                   style: TextStyle(
-                    color: AppColors.gold,
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
+                    color: AppColors.white,
+                    fontSize: 18,
                   ),
                 ),
                 SizedBox(height: 24),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: displayWidth(context) / 1.4,
-                      child: TextField(
-                        controller: studentController.emailTEC,
-                        onChanged: (value) async {
-                          if (!studentController.isPvamuEmail(value)) {
-                            emailErrorText = AppStrings.mustBePvamuEmail;
-                          } else {
-                            emailErrorText = "";
-                          }
-
-                          studentController.onTextChanged(value);
-                          setState(() {});
-                        },
-                        style: TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          labelStyle: TextStyle(color: AppColors.grey[200]),
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          floatingLabelAlignment: FloatingLabelAlignment.start,
-
-                          // define a single border style to reuse
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: AppColors.white,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: AppColors.white,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: AppColors.white,
-                            ),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(width: 1, color: Colors.red),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(width: 1, color: Colors.red),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (emailErrorText.isNotEmpty)
-                      Text(emailErrorText, style: TextStyle(color: Colors.red)),
-                  ],
-                ),
-
-                if ((studentController.filteredEmail != null &&
-                    studentController.filteredEmail?.value != null) ||
-                    !existsByEmail &&
-                        studentController.isPvamuEmail(
-                          studentController.emailTEC.text,
-                        ))
-                  Container(
-                    margin: EdgeInsets.only(top: 12),
-                    width: displayWidth(context) / 1.4,
-                    child: TextField(
-                      controller: studentController.firstNameTEC,
-                      onChanged: studentController.onTextChanged,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'First name',
-                        labelStyle: TextStyle(color: AppColors.grey[200]),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                        floatingLabelAlignment: FloatingLabelAlignment.start,
-                        // define a single border style to reuse
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                if ((studentController.filteredEmail != null &&
-                        studentController.filteredEmail?.value != null) ||
-                    !existsByEmail &&
-                        studentController.isPvamuEmail(
-                          studentController.emailTEC.text,
-                        ))
-                  Container(
-                    margin: EdgeInsets.only(top: 12),
-                    width: displayWidth(context) / 1.4,
-                    child: TextField(
-                      controller: studentController.lastNameTEC,
-                      onChanged: studentController.onTextChanged,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Last name',
-                        labelStyle: TextStyle(color: AppColors.grey[200]),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                        floatingLabelAlignment: FloatingLabelAlignment.start,
-                        // define a single border style to reuse
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(width: 1, color: Colors.red),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                // Obx(() {
-                //   if (studentController.filteredEmails.isNotEmpty) {
-                //     return Container(
-                //       margin: EdgeInsets.only(top: 10),
-                //       height: 120,
-                //       decoration: BoxDecoration(
-                //         color: Colors.white,
-                //         borderRadius: BorderRadius.circular(10),
-                //       ),
-                //       child: ListView.builder(
-                //         itemCount: studentController.filteredEmails.length,
-                //         itemBuilder: (context, index) {
-                //           var model = studentController.filteredEmails[index];
-                //           return ListTile(
-                //             title: Text(model.name!),
-                //             onTap:
-                //                 () => studentController.onEmailSelected(
-                //                   model.name!,
-                //                 ),
-                //           );
-                //         },
-                //       ),
-                //     );
-                //   } else {
-                //     return SizedBox.shrink();
-                //   }
-                // }),
-                SizedBox(height: 24),
 
                 SizedBox(
-                  width: displayWidth(context) / 1.4,
-                  child: CustomButton(
-                    onPressed: () async {
-                      if (studentController.authPageTitle.value ==
-                          AppStrings.signOut) {
-                        await studentController.signOut();
-                      } else {
-                        // existsByName =
-                        //     await studentController.doesUserExistByName();
-                        //
-                        // if (!existsByName &&
-                        //     studentController.emailTEC.text.isNotEmpty &&
-                        //     studentController.isPvamuEmail(
-                        //       studentController.emailTEC.text,
-                        //     )) {
-                        //   await studentController.doesUserExistByEmail();
-                        //
-                        //   Get.toNamed(Routes.detailsPageRoute);
-                        // } else if (existsByName) {
-                        //   Get.toNamed(Routes.detailsPageRoute);
-                        // }
+                  width: 300,
+                  child: Column(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            // width: displayWidth(context) / 1.4,
+                            child: TextField(
+                              controller: studentController.emailTEC,
+                              onChanged: (value) async {
+                                if (!studentController.isPvamuEmail(value)) {
+                                  emailErrorText = AppStrings.mustBePvamuEmail;
+                                } else {
+                                  emailErrorText = "";
+                                }
 
-                        existsByEmail =
-                            await studentController.doesUserExistByEmail();
+                                studentController.onTextChanged(value);
+                                setState(() {});
+                              },
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                labelText: 'Email',
+                                labelStyle: TextStyle(color: AppColors.grey[200]),
+                                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                floatingLabelAlignment: FloatingLabelAlignment.start,
 
-                        if (studentController.firstNameTEC.text.isNotEmpty &&
-                            studentController.lastNameTEC.text.isNotEmpty &&
-                            studentController.emailTEC.text.isNotEmpty &&
-                            studentController.isPvamuEmail(
-                              studentController.emailTEC.text,
-                            )) {
-                          Get.toNamed(Routes.detailsPageRoute);
-                        } else if (existsByEmail) {
-                          Get.toNamed(Routes.detailsPageRoute);
-                        }
+                                // define a single border style to reuse
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    width: 1,
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    width: 1,
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    width: 1,
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(width: 1, color: Colors.red),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(width: 1, color: Colors.red),
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (emailErrorText.isNotEmpty)
+                            Text(emailErrorText, style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
 
-                        setState(() {});
-                      }
-                    },
-                    text:
-                        studentController.authPageTitle.value ==
-                                AppStrings.signOut
-                            ? "Sign out"
-                            : "Next",
-                    textColor:
-                        studentController.authPageTitle.value !=
-                                AppStrings.signOut
-                            ? AppColors.purple
-                            : AppColors.white,
-                    bgColor:
-                        studentController.authPageTitle.value ==
-                                AppStrings.signOut
-                            ? Colors.red
-                            : AppColors.gold,
-                    fontSize: AppFonts.baseSize,
+                      if ((studentController.filteredEmail != null &&
+                          studentController.filteredEmail?.value != null) ||
+                          !existsByEmail &&
+                              studentController.isPvamuEmail(
+                                studentController.emailTEC.text,
+                              ))
+                        Container(
+                          margin: EdgeInsets.only(top: 12),
+                          // width: displayWidth(context) / 1.4,
+                          child: TextField(
+                            controller: studentController.firstNameTEC,
+                            onChanged: studentController.onTextChanged,
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              labelText: 'First name',
+                              labelStyle: TextStyle(color: AppColors.grey[200]),
+                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              floatingLabelAlignment: FloatingLabelAlignment.start,
+                              // define a single border style to reuse
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  width: 1,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  width: 1,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  width: 1,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(width: 1, color: Colors.red),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(width: 1, color: Colors.red),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      if ((studentController.filteredEmail != null &&
+                          studentController.filteredEmail?.value != null) ||
+                          !existsByEmail &&
+                              studentController.isPvamuEmail(
+                                studentController.emailTEC.text,
+                              ))
+                        Container(
+                          margin: EdgeInsets.only(top: 12),
+                          // width: displayWidth(context) / 1.4,
+                          child: TextField(
+                            controller: studentController.lastNameTEC,
+                            onChanged: studentController.onTextChanged,
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              labelText: 'Last name',
+                              labelStyle: TextStyle(color: AppColors.grey[200]),
+                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              floatingLabelAlignment: FloatingLabelAlignment.start,
+                              // define a single border style to reuse
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  width: 1,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  width: 1,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  width: 1,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(width: 1, color: Colors.red),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(width: 1, color: Colors.red),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      // Obx(() {
+                      //   if (studentController.filteredEmails.isNotEmpty) {
+                      //     return Container(
+                      //       margin: EdgeInsets.only(top: 10),
+                      //       height: 120,
+                      //       decoration: BoxDecoration(
+                      //         color: Colors.white,
+                      //         borderRadius: BorderRadius.circular(10),
+                      //       ),
+                      //       child: ListView.builder(
+                      //         itemCount: studentController.filteredEmails.length,
+                      //         itemBuilder: (context, index) {
+                      //           var model = studentController.filteredEmails[index];
+                      //           return ListTile(
+                      //             title: Text(model.name!),
+                      //             onTap:
+                      //                 () => studentController.onEmailSelected(
+                      //                   model.name!,
+                      //                 ),
+                      //           );
+                      //         },
+                      //       ),
+                      //     );
+                      //   } else {
+                      //     return SizedBox.shrink();
+                      //   }
+                      // }),
+                      SizedBox(height: 24),
+
+                      SizedBox(
+                        // width: displayWidth(context) / 1.4,
+                        child: CustomButton(
+                          onPressed: () async {
+                            if (studentController.authPageTitle.value ==
+                                AppStrings.signOut) {
+                              await studentController.signOut();
+                            } else {
+                              // existsByName =
+                              //     await studentController.doesUserExistByName();
+                              //
+                              // if (!existsByName &&
+                              //     studentController.emailTEC.text.isNotEmpty &&
+                              //     studentController.isPvamuEmail(
+                              //       studentController.emailTEC.text,
+                              //     )) {
+                              //   await studentController.doesUserExistByEmail();
+                              //
+                              //   Get.toNamed(Routes.detailsPageRoute);
+                              // } else if (existsByName) {
+                              //   Get.toNamed(Routes.detailsPageRoute);
+                              // }
+
+                              existsByEmail =
+                              await studentController.doesUserExistByEmail();
+
+                              if (studentController.firstNameTEC.text.isNotEmpty &&
+                                  studentController.lastNameTEC.text.isNotEmpty &&
+                                  studentController.emailTEC.text.isNotEmpty &&
+                                  studentController.isPvamuEmail(
+                                    studentController.emailTEC.text,
+                                  )) {
+                                Get.toNamed(Routes.detailsPageRoute);
+                              } else if (existsByEmail) {
+                                Get.toNamed(Routes.detailsPageRoute);
+                              }
+
+                              setState(() {});
+                            }
+                          },
+                          text:
+                          studentController.authPageTitle.value ==
+                              AppStrings.signOut
+                              ? "Sign out"
+                              : "Next",
+                          textColor:
+                          studentController.authPageTitle.value !=
+                              AppStrings.signOut
+                              ? AppColors.purple
+                              : AppColors.white,
+                          bgColor:
+                          studentController.authPageTitle.value ==
+                              AppStrings.signOut
+                              ? Colors.red
+                              : AppColors.gold,
+                          fontSize: AppFonts.baseSize,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      SizedBox(
+                        // width: displayWidth(context) / 1.4,
+                        child: CustomButton(
+                          onPressed: () {
+                            Get.offNamed(Routes.onboardingRoute);
+                          },
+                          text: "Go back",
+                          textColor: AppColors.purple,
+                          fontSize: AppFonts.baseSize,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 8),
-                SizedBox(
-                  width: displayWidth(context) / 1.4,
-                  child: CustomButton(
-                    onPressed: () {
-                      Get.offNamed(Routes.onboardingRoute);
-                    },
-                    text: "Go back",
-                    textColor: AppColors.purple,
-                      fontSize: AppFonts.baseSize,
-                  ),
-                ),
+
               ],
             ),
           ),

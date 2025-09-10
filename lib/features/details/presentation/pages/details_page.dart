@@ -40,11 +40,14 @@ class _DetailsPageState extends State<DetailsPage> {
                 fit: BoxFit.contain, // Ensure image fits
               ),
             ),
-            SizedBox(height: 24),
+            SizedBox(height: 80),
 
-            onboardingController.currentUserType.value == AppStrings.tutor
+            SizedBox(width: 360,
+            child: onboardingController.currentUserType.value == AppStrings.tutor
                 ? TutorDetailsView()
-                : StudentDetailsView(studentController: studentController),
+                : StudentDetailsView(studentController: studentController)),
+
+
           ],
         ),
       ),

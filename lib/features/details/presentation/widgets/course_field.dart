@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/helpers/size_helpers.dart';
+import 'package:sign_class/core/theme/colors.dart';
+import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/details/data/models/course_model.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 
@@ -18,7 +20,6 @@ class _CourseFieldState extends State<CourseField> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: displayWidth(context) / 1.4,
       child: FutureBuilder(
         future: widget.detailsController.getCourses(),
         builder: (context, snapshot) {
@@ -65,49 +66,85 @@ class _CourseFieldState extends State<CourseField> {
             selectedCourseId = null;
           }
 
-          return SizedBox(
-            width: displayWidth(context) / 1.4,
-
-            child: DropdownButtonFormField<String>(
-              isExpanded: true, // 👈 important
-              value: selectedCourseId,
-              items:
-              courses.map((course) {
+          return  DropdownButtonFormField<String>(
+            isExpanded: true, // important
+            value: selectedCourseId,
+            selectedItemBuilder: (context) {
+              return courses.map((course) {
                 return DropdownMenuItem<String>(
                   value: course.id,
-                  child: Text("${course.code} - ${course.name}"),
+                  child: Text("${course.code} - ${course.name}", style: TextStyle(color: AppColors.white)),
                 );
-              }).toList(),
-              onChanged: (String? value) {
-                setState(() {
-                  if (value != null) {
-                    final course = courses.firstWhere(
-                          (course) => course.id == value,
-                    );
-                    if (widget.detailsController.selectedCourse == null) {
-                      widget.detailsController.selectedCourse = Rx<Course>(
-                        course,
-                      );
-                    } else {
-                      widget.detailsController.selectedCourse!.value = course;
-                    }
-                  }
-                });
+              }).toList();
 
-                widget.onChanged!();
-              },
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Select course',
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                floatingLabelAlignment: FloatingLabelAlignment.start,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                widget.detailsController.options.map((goal) {
+                return Text(
+                  goal,
+                  style: TextStyle(color: AppColors.white), // selected value
+                );
+              }).toList();
+            },
+            items: courses.map((course) {
+              return DropdownMenuItem<String>(
+                value: course.id,
+                child: Text("${course.code} - ${course.name}"),
+              );
+            }).toList(),
+            onChanged: (String? value) {
+              setState(() {
+                if (value != null) {
+                  final course = courses.firstWhere(
+                        (course) => course.id == value,
+                  );
+                  if (widget.detailsController.selectedCourse == null) {
+                    widget.detailsController.selectedCourse = Rx<Course>(course);
+                  } else {
+                    widget.detailsController.selectedCourse!.value = course;
+                  }
+                }
+              });
+
+              widget.onChanged!();
+            },
+            hint: Text(
+              "Select course",
+              style: TextStyle(color: AppColors.grey[200]),
+            ),
+            decoration: InputDecoration(
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              floatingLabelAlignment: FloatingLabelAlignment.start,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppColors.white,
                 ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppColors.white,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppColors.white,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(width: 1, color: Colors.red),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(width: 1, color: Colors.red),
               ),
             ),
           );
+
         },
       ),
     );
