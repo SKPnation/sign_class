@@ -43,9 +43,7 @@ class _DetailsPageState extends State<DetailsPage> {
             SizedBox(height: 80),
 
             SizedBox(width: 360,
-            child: onboardingController.currentUserType.value == AppStrings.tutor
-                ? TutorDetailsView()
-                : StudentDetailsView(studentController: studentController)),
+            child: StudentDetailsView(studentController: studentController)),
 
 
           ],

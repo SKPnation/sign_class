@@ -14,6 +14,7 @@ class StudentDetailsView extends StatefulWidget {
   const StudentDetailsView({super.key, required this.studentController});
 
   final StudentController studentController;
+
   @override
   State<StudentDetailsView> createState() => _StudentDetailsViewState();
 }
@@ -21,63 +22,78 @@ class StudentDetailsView extends StatefulWidget {
 class _StudentDetailsViewState extends State<StudentDetailsView> {
   final detailsController = Get.put(DetailsController());
 
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-
-        //Goal field
-        GoalField(detailsController: detailsController, onChanged: ()=>setState(() {}),),
-
-        SizedBox(height: 8),
-
-        //Course field
-        CourseField(detailsController: detailsController, onChanged: ()=>setState(() {}),),
-
-        SizedBox(height: 8),
-
-        if(detailsController.selectedCourse != null && detailsController.selectedCourse!.value.assignedTutors != null)
-          TutorField(detailsController: detailsController),
-
-        SizedBox(height: 24),
-        SizedBox(
-          // width: displayWidth(context) / 1.4,
-          child: CustomButton(
-            onPressed: () async {
-
-              if (widget.studentController.register.value) {
-                widget.studentController.addStudent(
-                    detailsController.selectedCourse!.value,
-                    detailsController.selectedTutor?.value
-                );
-              } else {
-                await widget.studentController.signIn(
-                  detailsController.selectedCourse!.value,
-                );
-              }
-            },
-            text: "Sign in",
-            textColor: AppColors.purple,
-            fontSize: 18,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //Goal field
+          GoalField(
+            detailsController: detailsController,
+            onChanged: () => setState(() {}),
           ),
-        ),
 
-        SizedBox(height: 8),
+          SizedBox(height: 8),
 
-        SizedBox(
-          // width: displayWidth(context) / 1.4,
-          child: CustomButton(
-            onPressed: () {
-              Get.back();
-            },
-            text: "Go back",
-            textColor: AppColors.purple,
-            fontSize: 18,
+          //Course field
+          CourseField(
+            detailsController: detailsController,
+            onChanged: () => setState(() {}),
           ),
-        ),
-      ],
+
+          SizedBox(height: 8),
+
+          Obx((){
+            if ((detailsController.selectedCourse.value?.assignedTutors ?? []).isNotEmpty){
+              return TutorField(detailsController: detailsController);
+            }
+            else{
+              return SizedBox.shrink();
+            }
+
+          }),
+
+          SizedBox(height: 24),
+          SizedBox(
+            // width: displayWidth(context) / 1.4,
+            child: CustomButton(
+              onPressed: () async {
+                if (widget.studentController.register.value) {
+                  widget.studentController.addStudent(
+                    detailsController.selectedCourse.value!,
+                    detailsController.selectedTutor?.value,
+                  );
+                } else {
+                  print("sign in");
+
+                  await widget.studentController.signIn(
+                    detailsController.selectedCourse.value!,
+                    tutor: detailsController.selectedTutor?.value,
+                  );
+                }
+              },
+              text: "Sign in",
+              textColor: AppColors.purple,
+              fontSize: 18,
+            ),
+          ),
+
+          SizedBox(height: 8),
+
+          SizedBox(
+            // width: displayWidth(context) / 1.4,
+            child: CustomButton(
+              onPressed: () {
+                Get.back();
+              },
+              text: "Go back",
+              textColor: AppColors.purple,
+              fontSize: 18,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
-import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/details/data/models/course_model.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 
@@ -17,6 +15,8 @@ class CourseField extends StatefulWidget {
 }
 
 class _CourseFieldState extends State<CourseField> {
+  String? selectedCourseId;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -46,93 +46,140 @@ class _CourseFieldState extends State<CourseField> {
 
           var courses = snapshot.data as List<Course>;
 
-          var selectedCourse = widget.detailsController.selectedCourse?.value;
-          String? selectedCourseId;
-
-          if (selectedCourse != null &&
-              selectedCourse.name != null &&
-              selectedCourse.name!.isNotEmpty) {
-            // Find course by name in the fetched list
-            try {
-              selectedCourseId =
-                  courses
-                      .firstWhere((c) => c.name == selectedCourse.name)
-                      .id;
-            } catch (e) {
-              // If no course matches, leave selectedCourseId null
-              selectedCourseId = null;
-            }
-          } else {
-            selectedCourseId = null;
+          // initialize selectedCourseId only once
+          if (selectedCourseId == null &&
+              widget.detailsController.selectedCourse.value != null) {
+            selectedCourseId = widget.detailsController.selectedCourse.value!.id;
           }
 
-          return  DropdownButtonFormField<String>(
-            isExpanded: true, // important
-            value: selectedCourseId,
-            selectedItemBuilder: (context) {
-              return courses.map((course) {
-                return DropdownMenuItem<String>(
-                  value: course.id,
-                  child: Text("${course.code} - ${course.name}", style: TextStyle(color: AppColors.white)),
-                );
-              }).toList();
 
-                widget.detailsController.options.map((goal) {
-                return Text(
-                  goal,
-                  style: TextStyle(color: AppColors.white), // selected value
-                );
-              }).toList();
-            },
-            items: courses.map((course) {
+          // Grouping logic (unchanged)
+          final groupOrder = ["CVEG", "MATH", "CHEM", "ELEG", "MCEG", "PHYS"];
+          final groupedCourses = <String, List<Course>>{};
+          for (var course in courses) {
+            final prefix = groupOrder.firstWhere(
+                  (p) => course.code!.startsWith(p),
+              orElse: () => "OTHER",
+            );
+            groupedCourses.putIfAbsent(prefix, () => []).add(course);
+          }
+
+          // Flatten grouped items into one list
+          final dropdownItems = <DropdownMenuItem<String>>[];
+
+          for (var prefix in groupOrder) {
+            final group = groupedCourses[prefix] ?? [];
+            if (group.isEmpty) continue;
+
+            // Group header (disabled)
+            dropdownItems.add(
+              DropdownMenuItem<String>(
+                enabled: false,
+                child: Text(
+                  "$prefix COURSES",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.purple,
+                  ),
+                ),
+              ),
+            );
+
+            dropdownItems.addAll(group.map((course) {
               return DropdownMenuItem<String>(
                 value: course.id,
-                child: Text("${course.code} - ${course.name}"),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "${course.code} ",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      TextSpan(
+                        text: "- ${course.name}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               );
+            }));
+          }
+
+          return DropdownButtonFormField<String>(
+            isExpanded: true,
+            value: selectedCourseId,
+            items: dropdownItems.map((item) {
+              // Only style non-header items (skip disabled headers)
+              if (item.enabled) {
+                final isSelected = item.value == selectedCourseId;
+                return DropdownMenuItem<String>(
+                  value: item.value,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "${courses.firstWhere((c) => c.id == item.value).code} ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: isSelected ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "- ${courses.firstWhere((c) => c.id == item.value).name}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: isSelected ? Colors.white70 : Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return item; // headers remain unchanged
             }).toList(),
             onChanged: (String? value) {
-              setState(() {
-                if (value != null) {
-                  final course = courses.firstWhere(
-                        (course) => course.id == value,
-                  );
-                  if (widget.detailsController.selectedCourse == null) {
-                    widget.detailsController.selectedCourse = Rx<Course>(course);
-                  } else {
-                    widget.detailsController.selectedCourse!.value = course;
-                  }
-                }
-              });
+              if (value == null) return;
 
-              widget.onChanged!();
+              setState(() => selectedCourseId = value);
+
+              // Find the selected course
+              final course = courses.firstWhere((c) => c.id == value);
+
+              // Update the reactive variable directly
+              widget.detailsController.selectedCourse.value = course;
+
+              print("selected course: $value");
+              print("selected course from list: ${course.id}: name:${course.code}");
+              print("selected course tutors: ${course.assignedTutors}");
+
             },
+
             hint: Text(
               "Select course",
               style: TextStyle(color: AppColors.grey[200]),
             ),
             decoration: InputDecoration(
               floatingLabelBehavior: FloatingLabelBehavior.always,
-              floatingLabelAlignment: FloatingLabelAlignment.start,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  width: 1,
-                  color: AppColors.white,
-                ),
+                borderSide: BorderSide(width: 1, color: AppColors.white),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  width: 1,
-                  color: AppColors.white,
-                ),
+                borderSide: BorderSide(width: 1, color: AppColors.white),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  width: 1,
-                  color: AppColors.white,
-                ),
+                borderSide: BorderSide(width: 1, color: AppColors.white),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -150,3 +197,4 @@ class _CourseFieldState extends State<CourseField> {
     );
   }
 }
+

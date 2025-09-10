@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sign_class/core/global/success_page.dart';
 import 'package:sign_class/features/auth/data/models/student_model.dart';
 import 'package:sign_class/features/auth/data/repos/student_repo_impl.dart';
+import 'package:sign_class/features/auth/data/repos/tutor_repo_impl.dart';
 import 'package:sign_class/features/details/data/models/course_model.dart';
 import 'package:sign_class/features/details/data/models/tutor_model.dart';
 import 'package:sign_class/features/details/data/repos/courses_repo_impl.dart';
@@ -21,7 +22,7 @@ class StudentController extends GetxController {
 
   final TextEditingController firstNameTEC = TextEditingController();
   final TextEditingController lastNameTEC = TextEditingController();
-  final TextEditingController emailTEC = TextEditingController();
+  final TextEditingController emailTEC = TextEditingController(text: "alinco@pvamu.edu");
 
   var register = false.obs;
 
@@ -57,19 +58,19 @@ class StudentController extends GetxController {
     lastNameTEC.clear();
     emailTEC.clear();
     DetailsController.instance.whyTEC.clear();
-    DetailsController.instance.selectedCourse = null;
+    DetailsController.instance.selectedCourse.value = null;
   }
 
-  Future signIn(Course course) async {
-    querySnapshot =
-        await studentRepo.studentsCollection
-            .where('email', isEqualTo: emailTEC.text)
-            .limit(1)
-            .get();
+  Future signIn(Course course, {Tutor? tutor}) async {
+    querySnapshot = await studentRepo.studentsCollection
+        .where('email', isEqualTo: emailTEC.text)
+        .limit(1)
+        .get();
 
     var data = {
       "id": querySnapshot!.docs.first.id,
       "course": CoursesRepoImpl().coursesCollection.doc(course.id!),
+      "tutor": tutor == null ? null : TutorRepoImpl().tutorsCollection.doc(tutor.id!),
       "time_in": DateTime.now(),
       "time_out": null,
     };
@@ -77,13 +78,18 @@ class StudentController extends GetxController {
     await studentRepo.updateUser(data);
     onboardingController.numOfSignedInStudents.value++;
 
-    Get.to(SuccessPage(userName: querySnapshot!.docs.first['name']));
+    var name = "${querySnapshot!.docs.first['f_name']} ${querySnapshot!.docs.first['l_name']}";
+
+    Get.to(SuccessPage(userName: name));
 
     firstNameTEC.clear();
     lastNameTEC.clear();
     emailTEC.clear();
     DetailsController.instance.whyTEC.clear();
-    DetailsController.instance.selectedCourse = null;
+
+    // Correctly reset selected course and tutor
+    DetailsController.instance.selectedCourse.value = null;
+    // DetailsController.instance.selectedTutor.value = null;
   }
 
   Future<bool> doesUserExistByName() async {

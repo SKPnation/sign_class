@@ -16,7 +16,7 @@ class DetailsController extends GetxController{
 
   TextEditingController whyTEC = TextEditingController();
   // var selectedCourse = "".obs;
-  Rx<Course>? selectedCourse;
+  Rx<Course?> selectedCourse = Rx<Course?>(null);
   Rx<Tutor>? selectedTutor;
 
   Future<List<Course>> getCourses() async =>
