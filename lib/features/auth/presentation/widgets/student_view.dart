@@ -82,6 +82,8 @@ class _StudentViewState extends State<StudentView> {
                               style: TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                 labelText: 'Email',
+                                hintText: "abc@pvamu.edu",
+                                hintStyle: TextStyle(color: AppColors.grey[200]),
                                 labelStyle: TextStyle(color: AppColors.grey[200]),
                                 floatingLabelBehavior: FloatingLabelBehavior.auto,
                                 floatingLabelAlignment: FloatingLabelAlignment.start,

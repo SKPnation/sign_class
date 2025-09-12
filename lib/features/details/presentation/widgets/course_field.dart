@@ -52,7 +52,6 @@ class _CourseFieldState extends State<CourseField> {
             selectedCourseId = widget.detailsController.selectedCourse.value!.id;
           }
 
-
           // Grouping logic (unchanged)
           final groupOrder = ["CVEG", "MATH", "CHEM", "ELEG", "MCEG", "PHYS"];
           final groupedCourses = <String, List<Course>>{};
@@ -89,26 +88,19 @@ class _CourseFieldState extends State<CourseField> {
             dropdownItems.addAll(group.map((course) {
               return DropdownMenuItem<String>(
                 value: course.id,
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "${course.code} ",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "- ${course.name}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.normal,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  ),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  direction: Axis.horizontal,
+                  children: [
+                    Text("${course.code} ",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),),
+                    Text("- ${course.name}",),
+                  ],
                 ),
+
               );
             }));
           }
@@ -160,7 +152,6 @@ class _CourseFieldState extends State<CourseField> {
               print("selected course: $value");
               print("selected course from list: ${course.id}: name:${course.code}");
               print("selected course tutors: ${course.assignedTutors}");
-
             },
 
             hint: Text(
@@ -168,6 +159,7 @@ class _CourseFieldState extends State<CourseField> {
               style: TextStyle(color: AppColors.grey[200]),
             ),
             decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               floatingLabelBehavior: FloatingLabelBehavior.always,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),

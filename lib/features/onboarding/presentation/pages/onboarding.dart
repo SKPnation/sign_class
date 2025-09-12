@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
@@ -22,13 +23,40 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final studentController = Get.put(StudentController());
 
   final onboardingController = OnboardingController.instance;
+  final onVerifyRecognizer = TapGestureRecognizer();
+
+  late TapGestureRecognizer onSwitchRecognizer;
 
   @override
   void initState() {
+    super.initState();
+
+    // init recognizer
+    onSwitchRecognizer = TapGestureRecognizer()
+      ..onTap = () {
+        changeUserType(); // your function
+      };
+
     if (onboardingController.currentUserType.value != AppStrings.tutor) {
       onboardingController.totalSignedIn();
     }
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    onSwitchRecognizer.dispose();
+    super.dispose();
+  }
+
+  void changeUserType() {
+    if (onboardingController.currentUserType.value == AppStrings.tutor) {
+      onboardingController.currentUserType.value = AppStrings.student;
+    } else {
+      onboardingController.currentUserType.value = AppStrings.tutor;
+    }
+
+    print(onboardingController.currentUserType.value);
+    setState(() {});
   }
 
   @override
@@ -69,7 +97,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ),
 
                   const SizedBox(height: 80),
-
 
                   Obx(
                         () => CustomText(
@@ -117,6 +144,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ),
                       children: [
                         TextSpan(
+                          recognizer: onSwitchRecognizer,
                           text: " click here",
                           style: TextStyle(
                             color: Colors.white,

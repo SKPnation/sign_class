@@ -34,7 +34,7 @@ class TutorField extends StatelessWidget {
           detailsController.selectedTutor?.value = tutor;
         },
         hint: Text(
-          tutors.isEmpty ? "No Tutors" : "Select tutor",
+          tutors.isEmpty ? "No assigned tutors, check student center" : "Select tutor",
           style: TextStyle(color: AppColors.grey[200]),
         ),
         style: const TextStyle(color: Colors.white), // Selected text is white

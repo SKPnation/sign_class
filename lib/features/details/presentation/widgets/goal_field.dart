@@ -44,7 +44,7 @@ class _GoalFieldState extends State<GoalField> {
         widget.onChanged!();
       },
       hint: Text(
-        "Select your goal",
+        "Select your activity",
         style: TextStyle(color: AppColors.grey[200]),
       ),
       decoration: InputDecoration(

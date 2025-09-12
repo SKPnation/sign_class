@@ -45,7 +45,7 @@ class _StudentDetailsViewState extends State<StudentDetailsView> {
           SizedBox(height: 8),
 
           Obx((){
-            if ((detailsController.selectedCourse.value?.assignedTutors ?? []).isNotEmpty){
+            if (detailsController.selectedCourse.value != null){
               return TutorField(detailsController: detailsController);
             }
             else{
