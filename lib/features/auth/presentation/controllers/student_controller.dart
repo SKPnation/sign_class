@@ -22,7 +22,7 @@ class StudentController extends GetxController {
 
   final TextEditingController firstNameTEC = TextEditingController();
   final TextEditingController lastNameTEC = TextEditingController();
-  final TextEditingController emailTEC = TextEditingController(text: "alinco@pvamu.edu");
+  final TextEditingController emailTEC = TextEditingController(text: "@pvamu.edu");
 
   var register = false.obs;
 
