@@ -5,7 +5,11 @@ import 'package:sign_class/features/details/data/models/course_model.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 
 class CourseField extends StatefulWidget {
-  const CourseField({super.key, required this.detailsController, this.onChanged});
+  const CourseField({
+    super.key,
+    required this.detailsController,
+    this.onChanged,
+  });
 
   final DetailsController detailsController;
   final Function()? onChanged;
@@ -17,9 +21,24 @@ class CourseField extends StatefulWidget {
 class _CourseFieldState extends State<CourseField> {
   String? selectedCourseId;
 
+  double getDynamicHeight(String text) {
+    // Example: 20 px per line, with ~40 chars per line
+    int lines = (text.length / 30).ceil();
+    return (lines * 26.0) + 30.0;
+    // return lines * 20.0 + 70; // base padding
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      // height: 100,
+      height: widget.detailsController.selectedCourse.value == null ? null : getDynamicHeight(widget.detailsController.selectedCourse.value!.name!),
+
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(width: 1, color: Colors.white),
+      ),
       child: FutureBuilder(
         future: widget.detailsController.getCourses(),
         builder: (context, snapshot) {
@@ -28,9 +47,7 @@ class _CourseFieldState extends State<CourseField> {
               child: SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
-                  color: Color(0xFF43A95D),
-                ),
+                child: CircularProgressIndicator(color: Color(0xFF43A95D)),
               ),
             );
           }
@@ -49,7 +66,8 @@ class _CourseFieldState extends State<CourseField> {
           // initialize selectedCourseId only once
           if (selectedCourseId == null &&
               widget.detailsController.selectedCourse.value != null) {
-            selectedCourseId = widget.detailsController.selectedCourse.value!.id;
+            selectedCourseId =
+                widget.detailsController.selectedCourse.value!.id;
           }
 
           // Grouping logic (unchanged)
@@ -85,56 +103,66 @@ class _CourseFieldState extends State<CourseField> {
               ),
             );
 
-            dropdownItems.addAll(group.map((course) {
-              return DropdownMenuItem<String>(
-                value: course.id,
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  direction: Axis.horizontal,
-                  children: [
-                    Text("${course.code} ",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),),
-                    Text("- ${course.name}",),
-                  ],
-                ),
-
-              );
-            }));
+            dropdownItems.addAll(
+              group.map((course) {
+                return DropdownMenuItem<String>(
+                  value: course.id,
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    direction: Axis.horizontal,
+                    children: [
+                      Text(
+                        "${course.code} ",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text("- ${course.name}"),
+                    ],
+                  ),
+                );
+              }),
+            );
           }
 
           return DropdownButtonFormField<String>(
             isExpanded: true,
             value: selectedCourseId,
-            items: dropdownItems.map((item) {
+            items:
+            dropdownItems.map((item) {
               // Only style non-header items (skip disabled headers)
               if (item.enabled) {
                 final isSelected = item.value == selectedCourseId;
                 return DropdownMenuItem<String>(
                   value: item.value,
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "${courses.firstWhere((c) => c.id == item.value).code} ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: isSelected ? Colors.white : Colors.black,
-                          ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${courses.firstWhere((c) => c.id == item.value).code}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isSelected ? Colors.white : Colors.black,
                         ),
-                        TextSpan(
-                          text: "- ${courses.firstWhere((c) => c.id == item.value).name}",
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded( // allows wrapping
+                        child: Text(
+                          " - ${courses.firstWhere((c) => c.id == item.value).name}",
+                          softWrap: true,
+                          maxLines: null,
+                          overflow: TextOverflow.visible,
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
                             color: isSelected ? Colors.white70 : Colors.black87,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
+
               }
               return item; // headers remain unchanged
             }).toList(),
@@ -150,7 +178,9 @@ class _CourseFieldState extends State<CourseField> {
               widget.detailsController.selectedCourse.value = course;
 
               print("selected course: $value");
-              print("selected course from list: ${course.id}: name:${course.code}");
+              print(
+                "selected course from list: ${course.id}: name:${course.code}",
+              );
               print("selected course tutors: ${course.assignedTutors}");
             },
 
@@ -159,34 +189,35 @@ class _CourseFieldState extends State<CourseField> {
               style: TextStyle(color: AppColors.grey[200]),
             ),
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 12,
+              ),
               floatingLabelBehavior: FloatingLabelBehavior.always,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(width: 1, color: AppColors.white),
+                borderSide: BorderSide.none,
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(width: 1, color: AppColors.white),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(width: 1, color: AppColors.white),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(width: 1, color: Colors.red),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(width: 1, color: Colors.red),
-              ),
+              // enabledBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(10),
+              //   borderSide: BorderSide(width: 1, color: AppColors.white),
+              // ),
+              // focusedBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(10),
+              //   borderSide: BorderSide(width: 1, color: AppColors.white),
+              // ),
+              // errorBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(10),
+              //   borderSide: BorderSide(width: 1, color: Colors.red),
+              // ),
+              // focusedErrorBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.circular(10),
+              //   borderSide: BorderSide(width: 1, color: Colors.red),
+              // ),
             ),
           );
-
         },
       ),
     );
   }
 }
-
