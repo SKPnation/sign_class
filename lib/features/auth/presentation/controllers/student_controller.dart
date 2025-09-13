@@ -22,7 +22,7 @@ class StudentController extends GetxController {
 
   final TextEditingController firstNameTEC = TextEditingController();
   final TextEditingController lastNameTEC = TextEditingController();
-  final TextEditingController emailTEC = TextEditingController(text: "alinco@pvamu.edu");
+  final TextEditingController emailTEC = TextEditingController(text: "@pvamu.edu");
 
   var register = false.obs;
 
@@ -140,8 +140,9 @@ class StudentController extends GetxController {
 
     onboardingController.numOfSignedInStudents.value--;
 
-    Get.to(SuccessPage(userName: querySnapshot!.docs.first['name']));
-  }
+    var name = "${querySnapshot!.docs.first['f_name']} ${querySnapshot!.docs.first['l_name']}";
+
+    Get.to(SuccessPage(userName: name));  }
 
   bool isPvamuEmail(String email) {
     return email.contains('@pvamu.edu');
