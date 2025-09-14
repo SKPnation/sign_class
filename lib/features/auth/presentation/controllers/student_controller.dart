@@ -61,6 +61,11 @@ class StudentController extends GetxController {
     DetailsController.instance.selectedCourse.value = null;
   }
 
+  bool isValidPvamuEmail(String email) {
+    final regex = RegExp(r'^[^@]+@pvamu\.edu$');
+    return regex.hasMatch(email);
+  }
+
   Future signIn(Course course, {Tutor? tutor}) async {
     querySnapshot = await studentRepo.studentsCollection
         .where('email', isEqualTo: emailTEC.text)

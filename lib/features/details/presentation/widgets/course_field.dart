@@ -24,16 +24,18 @@ class _CourseFieldState extends State<CourseField> {
   double getDynamicHeight(String text) {
     // Example: 20 px per line, with ~40 chars per line
     int lines = (text.length / 30).ceil();
-    return (lines * 26.0) + 30.0;
-    // return lines * 20.0 + 70; // base padding
+    return (lines * 26.0) + 30.0; // base padding
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 100,
-      height: widget.detailsController.selectedCourse.value == null ? null : getDynamicHeight(widget.detailsController.selectedCourse.value!.name!),
+      height:
+          widget.detailsController.selectedCourse.value == null
+              ? null
+              : getDynamicHeight(
+                widget.detailsController.selectedCourse.value!.name!,
+              ),
 
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
@@ -75,7 +77,7 @@ class _CourseFieldState extends State<CourseField> {
           final groupedCourses = <String, List<Course>>{};
           for (var course in courses) {
             final prefix = groupOrder.firstWhere(
-                  (p) => course.code!.startsWith(p),
+              (p) => course.code!.startsWith(p),
               orElse: () => "OTHER",
             );
             groupedCourses.putIfAbsent(prefix, () => []).add(course);
@@ -87,6 +89,13 @@ class _CourseFieldState extends State<CourseField> {
           for (var prefix in groupOrder) {
             final group = groupedCourses[prefix] ?? [];
             if (group.isEmpty) continue;
+
+            // Sort numerically based on the number after the prefix
+            group.sort((a, b) {
+              final aNum = int.tryParse(a.code!.replaceAll(RegExp(r'[^0-9]'), "")) ?? 0;
+              final bNum = int.tryParse(b.code!.replaceAll(RegExp(r'[^0-9]'), "")) ?? 0;
+              return aNum.compareTo(bNum);
+            });
 
             // Group header (disabled)
             dropdownItems.add(
@@ -130,42 +139,45 @@ class _CourseFieldState extends State<CourseField> {
             isExpanded: true,
             value: selectedCourseId,
             items:
-            dropdownItems.map((item) {
-              // Only style non-header items (skip disabled headers)
-              if (item.enabled) {
-                final isSelected = item.value == selectedCourseId;
-                return DropdownMenuItem<String>(
-                  value: item.value,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${courses.firstWhere((c) => c.id == item.value).code}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: isSelected ? Colors.white : Colors.black,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded( // allows wrapping
-                        child: Text(
-                          " - ${courses.firstWhere((c) => c.id == item.value).name}",
-                          softWrap: true,
-                          maxLines: null,
-                          overflow: TextOverflow.visible,
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            color: isSelected ? Colors.white70 : Colors.black87,
+                dropdownItems.map((item) {
+                  // Only style non-header items (skip disabled headers)
+                  if (item.enabled) {
+                    final isSelected = item.value == selectedCourseId;
+                    return DropdownMenuItem<String>(
+                      value: item.value,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${courses.firstWhere((c) => c.id == item.value).code}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isSelected ? Colors.white : Colors.black,
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            // allows wrapping
+                            child: Text(
+                              " - ${courses.firstWhere((c) => c.id == item.value).name}",
+                              softWrap: true,
+                              maxLines: null,
+                              overflow: TextOverflow.visible,
+                              style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                color:
+                                    isSelected
+                                        ? Colors.white70
+                                        : Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-
-              }
-              return item; // headers remain unchanged
-            }).toList(),
+                    );
+                  }
+                  return item; // headers remain unchanged
+                }).toList(),
             onChanged: (String? value) {
               if (value == null) return;
 
@@ -198,22 +210,6 @@ class _CourseFieldState extends State<CourseField> {
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide.none,
               ),
-              // enabledBorder: OutlineInputBorder(
-              //   borderRadius: BorderRadius.circular(10),
-              //   borderSide: BorderSide(width: 1, color: AppColors.white),
-              // ),
-              // focusedBorder: OutlineInputBorder(
-              //   borderRadius: BorderRadius.circular(10),
-              //   borderSide: BorderSide(width: 1, color: AppColors.white),
-              // ),
-              // errorBorder: OutlineInputBorder(
-              //   borderRadius: BorderRadius.circular(10),
-              //   borderSide: BorderSide(width: 1, color: Colors.red),
-              // ),
-              // focusedErrorBorder: OutlineInputBorder(
-              //   borderRadius: BorderRadius.circular(10),
-              //   borderSide: BorderSide(width: 1, color: Colors.red),
-              // ),
             ),
           );
         },
