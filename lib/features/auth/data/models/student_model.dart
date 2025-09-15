@@ -43,6 +43,7 @@ class Student {
       fName: map['f_name'] ?? '',
       lName: map['l_name'] ?? '',
       email: map['email'] ?? '',
+      nameLower: map['name_lower'] ?? '',
       createdAt: (map['created_at'] as Timestamp).toDate(),
       timeIn: map['time_in'] != null ? (map['time_in'] as Timestamp).toDate() : null,
       timeOut: map['time_out'] != null ? (map['time_out'] as Timestamp).toDate() : null,

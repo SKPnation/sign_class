@@ -81,24 +81,12 @@ class StudentRepoImpl extends StudentRepo {
       }
     }
 
-    // var query =
-    //      studentsCollection
-    //         .where("time_out", isEqualTo: null)
-    //         .count();
-    //
-    //
-    // // Execute the aggregate query
-    // var snapshot = await query.get();
-    // total = snapshot.count!;
-    //
-    // print(total);
-
     return total;
   }
 
   @override
   Future<Student?> getStudentInfo(String email) async{
-    // Query Firestore for the document where email matches exactly
+    // Query FireStore for the document where email matches exactly
     final querySnapshot = await studentsCollection
         .where("email", isEqualTo: email)
         .limit(1) // stop after the first match
@@ -110,11 +98,30 @@ class StudentRepoImpl extends StudentRepo {
 
     final doc = querySnapshot.docs.first;
 
-    // Convert Firestore data to Student model
+    // Convert FireStore data to Student model
     return await Student.fromMapAsync(
       doc.data() as Map<String, dynamic>,
       doc.id,
     );
 
+  }
+
+  @override
+  Future<List<Student>> getSignedInStudentsList() async{
+    final querySnapshot = await studentsCollection.get();
+
+    final students = await Future.wait(
+      querySnapshot.docs.map((doc) async {
+        var map = doc.data() as Map<String, dynamic>;
+
+        if(map['time_out'] == null){
+          return await Student.fromMapAsync(map, doc.id);
+        }
+        return null;
+      }),
+    );
+
+    // Remove nulls (students that had time_out)
+    return students.whereType<Student>().toList();
   }
 }

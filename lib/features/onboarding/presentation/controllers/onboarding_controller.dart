@@ -2,6 +2,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/core/helpers/navigation/app_routes.dart';
+import 'package:sign_class/features/auth/data/models/student_model.dart';
 import 'package:sign_class/features/auth/data/repos/student_repo_impl.dart';
 
 class OnboardingController extends GetxController {
@@ -26,5 +27,8 @@ class OnboardingController extends GetxController {
     currentUserType.value = AppStrings.student;
     Get.toNamed(Routes.onboardingRoute);
   }
+
+  Future<List<Student>> getSignedInStudentsList() async =>
+      await studentRepo.getSignedInStudentsList();
 
 }

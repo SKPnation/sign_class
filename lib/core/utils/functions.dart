@@ -16,3 +16,9 @@ Future<Tutor> getTutor(DocumentReference docRef) async {
     tutorSnap.data() as Map<String, dynamic>,
   );
 }
+
+String formatDuration(Duration d) {
+  int hours = d.inHours;
+  int minutes = d.inMinutes.remainder(60);
+  return "${hours}h ${minutes}m";
+}

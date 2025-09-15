@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/global/success_page.dart';
+import 'package:sign_class/core/utils/functions.dart';
 import 'package:sign_class/features/auth/data/models/student_model.dart';
 import 'package:sign_class/features/auth/data/repos/student_repo_impl.dart';
 import 'package:sign_class/features/auth/data/repos/tutor_repo_impl.dart';
@@ -89,7 +90,7 @@ class StudentController extends GetxController {
 
     firstNameTEC.clear();
     lastNameTEC.clear();
-    emailTEC.clear();
+    // emailTEC.clear(); //TODO: uNCOMMENT
     DetailsController.instance.whyTEC.clear();
 
     // Correctly reset selected course and tutor
@@ -141,13 +142,23 @@ class StudentController extends GetxController {
 
     await studentRepo.updateUser(data);
 
+    final docSnapshot = await studentRepo.studentsCollection.doc(querySnapshot!.docs.first.id).get();
+    final output = docSnapshot.data() as Map<String, dynamic>;
+
+
+
     studentRepo.deleteUser(querySnapshot!.docs.first.id);
 
     onboardingController.numOfSignedInStudents.value--;
 
     var name = "${querySnapshot!.docs.first['f_name']} ${querySnapshot!.docs.first['l_name']}";
+    var timeIn = (output['time_in'] as Timestamp).toDate();
+    var timeOut = (output['time_out'] as Timestamp).toDate();
 
-    Get.to(SuccessPage(userName: name));  }
+    Duration duration = timeOut.difference(timeIn);
+
+
+    Get.to(SuccessPage(userName: name, timeSpent: formatDuration(duration)));  }
 
   bool isPvamuEmail(String email) {
     return email.contains('@pvamu.edu');

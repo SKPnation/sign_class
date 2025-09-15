@@ -94,35 +94,39 @@ class _TutorViewState extends State<TutorView> {
 
               SizedBox(height: 40),
               if (tutorController.tutor.value == null) ...[
-                SizedBox(
-                  width: displayWidth(context) / 1.4,
-                  child: TextField(
-                    controller: tutorController.emailTEC,
-                    onChanged: (value) {
-                      if (!tutorController.isPvamuEmail(value)) {
-                        emailErrorText = AppStrings.mustBePvamuEmail;
-                      } else {
-                        emailErrorText = "";
-                      }
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      child: TextField(
+                        controller: tutorController.emailTEC,
+                        onChanged: (value) {
+                          if (!tutorController.isPvamuEmail(value)) {
+                            emailErrorText = AppStrings.mustBePvamuEmail;
+                          } else {
+                            emailErrorText = "";
+                          }
 
-                      setState(() {});
-                    },
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelText: 'Email',
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      floatingLabelAlignment: FloatingLabelAlignment.start,
-                      // aligns to the top-left
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                          setState(() {});
+                        },
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelText: 'Email',
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          floatingLabelAlignment: FloatingLabelAlignment.start,
+                          // aligns to the top-left
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    if (emailErrorText.isNotEmpty)
+                      Text(emailErrorText, style: TextStyle(color: Colors.red)),
+                  ],
                 ),
-                if (emailErrorText.isNotEmpty)
-                  Text(emailErrorText, style: TextStyle(color: Colors.red)),
 
                 SizedBox(height: 16),
 

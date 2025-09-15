@@ -9,4 +9,5 @@ abstract class StudentRepo {
   Future<void> updateUser(Map<String, dynamic> fields); //to update time_in and time_out
   void deleteUser(String id); //To delete from the local storage
   Future<int> getTotalSignedInStudents();
+  Future<List<Student>> getSignedInStudentsList();
 }
