@@ -2,15 +2,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
-import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/global/custom_text.dart';
-import 'package:sign_class/core/helpers/image_elements.dart';
-import 'package:sign_class/core/helpers/navigation/app_routes.dart';
+import 'package:sign_class/core/helpers/responsiveness.dart';
+import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
-import 'package:sign_class/core/theme/fonts.dart';
-import 'package:sign_class/features/auth/data/models/student_model.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 import 'package:sign_class/features/onboarding/presentation/controllers/onboarding_controller.dart';
+import 'package:sign_class/features/onboarding/presentation/widgets/onboarding_large.dart';
+import 'package:sign_class/features/onboarding/presentation/widgets/onboarding_small.dart';
 
 //change to onboarding
 class OnboardingPage extends StatefulWidget {
@@ -24,7 +23,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final studentController = Get.put(StudentController());
 
   final onboardingController = OnboardingController.instance;
-  final onVerifyRecognizer = TapGestureRecognizer();
 
   late TapGestureRecognizer onSwitchRecognizer;
 
@@ -34,10 +32,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     // init recognizer
     onSwitchRecognizer =
-    TapGestureRecognizer()
-      ..onTap = () {
-        changeUserType(); // your function
-      };
+        TapGestureRecognizer()
+          ..onTap = () {
+            changeUserType(); // your function
+          };
 
     if (onboardingController.currentUserType.value != AppStrings.tutor) {
       onboardingController.totalSignedIn();
@@ -68,173 +66,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
         color: AppColors.purple,
         child: Stack(
           children: [
-            Row(
-              children: [
-                Expanded(
-                    flex: 3,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-
-                          if(onboardingController.currentUserType.value == AppStrings.tutor)
-                          const SizedBox(height: 100),
-
-                          Image.asset(
-                            ImageElements.pvamuLogo,
-                            width: 180,
-                            height: 160,
-                            fit: BoxFit.contain, // Ensure image fits
-                          ),
-
-                          const SizedBox(height: 80),
-
-                          Obx(
-                                () =>
-                                CustomText(
-                                  text:
-                                  "${onboardingController.currentUserType.value} login",
-                                  size: 18,
-                                  color: AppColors.white,
-                                ),
-                          ),
-
-                          SizedBox(height: 24),
-
-                          SizedBox(
-                            width: 300,
-                            child: CustomButton(
-                              onPressed: () {
-                                studentController.authPageTitle.value =
-                                    AppStrings.signIn;
-                                Get.toNamed(Routes.authenticationPageRoute);
-                              },
-                              text: "Sign In",
-                              textColor: AppColors.purple,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          SizedBox(
-                            width: 300,
-                            child: CustomButton(
-                              onPressed: () async {
-                                studentController.authPageTitle.value =
-                                    AppStrings.signOut;
-                                Get.toNamed(Routes.authenticationPageRoute);
-                              },
-                              text: "Sign Out",
-                              textColor: AppColors.purple,
-                            ),
-                          ),
-
-                          SizedBox(height: 24),
-
-                          RichText(
-                            text: TextSpan(
-                              text:
-                              "If you are a ${onboardingController.currentUserType
-                                  .value == AppStrings.tutor ? "STUDENT" : "TUTOR"}, 👉",
-                              style: TextStyle(color: Colors.white, fontSize: 16),
-                              children: [
-                                TextSpan(
-                                  recognizer: onSwitchRecognizer,
-                                  text: " click here",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          SizedBox(height: 80),
-                        ],
-                      ),
-                    )
+            ResponsiveWidget.isSmallScreen(context)
+                ? OnboardingSmall(
+                  onboardingController: onboardingController,
+                  onSwitchRecognizer: onSwitchRecognizer,
+                  studentController: studentController,
+                )
+                : OnboardingLarge(
+                  onboardingController: onboardingController,
+                  onSwitchRecognizer: onSwitchRecognizer,
+                  studentController: studentController,
                 ),
-
-                if(onboardingController.currentUserType.value ==
-                    AppStrings.student)
-                  FutureBuilder(
-                      future: onboardingController.getSignedInStudentsList(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(
-                            child: SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                  color: AppColors.gold),
-                            ),
-                          );
-                        }
-
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text(
-                              'Error: ${snapshot.error}',
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          );
-                        }
-
-                        if (!snapshot.hasData) {
-                          return const SizedBox.shrink();
-                        }
-
-                        var students = snapshot.data as List<Student>;
-                        students.sort((a, b) => b.timeIn!.compareTo(a.timeIn!));
-
-                        return Container(
-                          width: 250,
-                          decoration: BoxDecoration(
-                            color: AppColors.purpleDarker,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: EdgeInsets.all(16),
-                          child: Column(
-                            children: [
-                              CustomText(text: "Signed-in Students", size: 18,
-                                  color: AppColors.white, weight: FontWeight.bold),
-                              SizedBox(height: 10),
-                              ...students.map((student) =>
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(.2), // light background
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child:  ListTile(
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                      leading: CircleAvatar(
-                                        backgroundColor: Colors.amber, // highlight circle
-                                        child: Text(
-                                          student.nameLower!.substring(0, 1).toUpperCase(),
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                      title: Text(
-                                        student.nameLower ?? '',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  )),
-                            ],
-                          ),
-                        );
-                      }
-                  )
-              ],
-            ),
 
             Align(
               alignment: Alignment.bottomLeft,
-              child: CustomText(text: "1", color: AppColors.purpleDarker),
-            )
+              child: CustomText(text: "2", color: AppColors.purpleDarker),
+            ),
           ],
-        )
+        ),
       ),
     );
   }
