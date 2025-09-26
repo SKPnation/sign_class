@@ -163,12 +163,12 @@ class OnboardingSmall extends StatelessWidget {
                                   leading: CircleAvatar(
                                     backgroundColor: Colors.amber, // highlight circle
                                     child: Text(
-                                      student.nameLower!.substring(0, 1).toUpperCase(),
+                                      "${student.fName!.substring(0, 1).toUpperCase()}${student.lName!.substring(0, 1).toUpperCase()}",
                                       style: TextStyle(color: Colors.black),
                                     ),
                                   ),
                                   title: Text(
-                                    student.nameLower ?? '',
+                                    '${student.fName?[0].toUpperCase()}${student.fName?.substring(1)} ${student.lName?[0].toUpperCase()}${student.lName?.substring(1)}',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),

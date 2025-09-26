@@ -4,14 +4,12 @@ import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/core/global/custom_text.dart';
 import 'package:sign_class/core/helpers/responsiveness.dart';
-import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 import 'package:sign_class/features/onboarding/presentation/controllers/onboarding_controller.dart';
 import 'package:sign_class/features/onboarding/presentation/widgets/onboarding_large.dart';
 import 'package:sign_class/features/onboarding/presentation/widgets/onboarding_small.dart';
 
-//change to onboarding
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 

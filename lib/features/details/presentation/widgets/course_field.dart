@@ -72,7 +72,7 @@ class _CourseFieldState extends State<CourseField> {
                 widget.detailsController.selectedCourse.value!.id;
           }
 
-          // Grouping logic (unchanged)
+          // Grouping logic
           final groupOrder = ["CVEG", "MATH", "CHEM", "ELEG", "MCEG", "PHYS"];
           final groupedCourses = <String, List<Course>>{};
           for (var course in courses) {
@@ -91,11 +91,42 @@ class _CourseFieldState extends State<CourseField> {
             if (group.isEmpty) continue;
 
             // Sort numerically based on the number after the prefix
-            group.sort((a, b) {
-              final aNum = int.tryParse(a.code!.replaceAll(RegExp(r'[^0-9]'), "")) ?? 0;
-              final bNum = int.tryParse(b.code!.replaceAll(RegExp(r'[^0-9]'), "")) ?? 0;
-              return aNum.compareTo(bNum);
-            });
+            // group.sort((a, b) {
+            //   final aNum = int.tryParse(a.code!.replaceAll(RegExp(r'[^0-9]'), "")) ?? 0;
+            //   final bNum = int.tryParse(b.code!.replaceAll(RegExp(r'[^0-9]'), "")) ?? 0;
+            //   return aNum.compareTo(bNum);
+            // });
+
+            // helper to pull the numeric part once
+            int numOf(Course c) =>
+                int.tryParse(c.code!.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+
+            // desired order for MATH only
+            const mathOrder = ['1314', '1316', '1511', '2413', '2414', '2320'];
+            final mathRank = {
+              for (var i = 0; i < mathOrder.length; i++) mathOrder[i]: i,
+            };
+
+            if (prefix == 'MATH') {
+              group.sort((a, b) {
+                final an = RegExp(r'\d+').firstMatch(a.code!)?.group(0) ?? '';
+                final bn = RegExp(r'\d+').firstMatch(b.code!)?.group(0) ?? '';
+
+                final ar = mathRank[an];
+                final br = mathRank[bn];
+
+                // If either is in the custom list, use that rank; otherwise fall back to numeric
+                if (ar != null || br != null) {
+                  final aScore = ar ?? (mathOrder.length + numOf(a));
+                  final bScore = br ?? (mathOrder.length + numOf(b));
+                  return aScore.compareTo(bScore);
+                }
+                return numOf(a).compareTo(numOf(b));
+              });
+            } else {
+              // default numeric sort for other prefixes
+              group.sort((a, b) => numOf(a).compareTo(numOf(b)));
+            }
 
             // Group header (disabled)
             dropdownItems.add(

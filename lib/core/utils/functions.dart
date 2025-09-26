@@ -22,3 +22,8 @@ String formatDuration(Duration d) {
   int minutes = d.inMinutes.remainder(60);
   return "${hours}h ${minutes}m";
 }
+
+String capitalizeFirst(String? name) {
+  if (name == null || name.isEmpty) return '';
+  return name[0].toUpperCase() + name.substring(1);
+}
