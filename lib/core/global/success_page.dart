@@ -7,6 +7,7 @@ import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
+import 'package:sign_class/features/onboarding/presentation/controllers/onboarding_controller.dart';
 import 'package:sign_class/features/onboarding/presentation/pages/onboarding.dart';
 
 class SuccessPage extends StatelessWidget {
@@ -16,6 +17,7 @@ class SuccessPage extends StatelessWidget {
   final String? timeSpent;
 
   final studentController = Get.put(StudentController());
+  final onboardingController = Get.put(OnboardingController());
 
   @override
   Widget build(BuildContext context) {
@@ -30,33 +32,40 @@ class SuccessPage extends StatelessWidget {
             Icon(Icons.check_circle_outline, size: 100, color: Colors.green),
             SizedBox(height: 20),
             Text(
-              '${studentController.authPageTitle.value == AppStrings.signIn ? "Welcome" : "Goodbye"}, $userName!',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,),
+              '${(studentController.authPageTitle.value == "${AppStrings.tutor} ${AppStrings.signIn}") || (studentController.authPageTitle.value == "${AppStrings.student} ${AppStrings.signIn}") ? "Welcome" : "Goodbye"}, $userName!',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 10),
             Text(
               'Signed ${studentController.authPageTitle.value == AppStrings.signIn ? "In" : "Out"} Successfully',
-              style: TextStyle(
-                fontSize: 18,
-              ),
+              style: TextStyle(fontSize: 18),
             ),
-            if(studentController.authPageTitle.value != AppStrings.signIn)
+            if (studentController.authPageTitle.value != AppStrings.signIn)
               Column(
                 children: [
                   SizedBox(height: 10),
-                  CustomText(text: "Time spent: $timeSpent", size: 16,),
+                  CustomText(text: "Time spent: $timeSpent", size: 16),
                 ],
               ),
 
             SizedBox(height: 40),
-            SizedBox(width: displayWidth(context)/1.4, child: CustomButton(onPressed: (){
-              studentController.authPageTitle.value = AppStrings.signIn;
+            SizedBox(
+              width: displayWidth(context) / 1.4,
+              child: CustomButton(
+                onPressed: () {
+                  studentController.authPageTitle.value =
+                      onboardingController.currentUserType.value ==
+                              AppStrings.tutor
+                          ? "${AppStrings.tutor} ${AppStrings.signIn}"
+                          : "${AppStrings.student} ${AppStrings.signIn}";
 
-              Get.off(OnboardingPage());
-
-            }, text: "Done", textColor: AppColors.white, fontSize: 18)),
+                  Get.off(OnboardingPage());
+                },
+                text: "Done",
+                textColor: AppColors.white,
+                fontSize: 18,
+              ),
+            ),
           ],
         ),
       ),

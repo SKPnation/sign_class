@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sign_class/features/auth/domain/repos/tutor_repo.dart';
+import 'package:sign_class/features/details/data/models/tutor_model.dart';
 
 abstract class _Keys {
   static const tutors = 'tutors';
@@ -17,19 +18,19 @@ class TutorRepoImpl extends TutorRepo {
     await tutorsCollection.doc(fields['id']).update(data);
   }
 
-  @override
-  Future<void> setSchedule(Map<String, dynamic> fields, String tutorId) async {
-    final data = Map<String, dynamic>.from(fields);
-    final docRef = availabilityCollection.doc(tutorId);
-
-    final docSnapshot = await docRef.get();
-
-    if (docSnapshot.exists) {
-      await docRef.update(data);
-    } else {
-      await docRef.set(data);
-    }
-  }
+  // @override
+  // Future<void> setSchedule(Map<String, dynamic> fields, String tutorId) async {
+  //   final data = Map<String, dynamic>.from(fields);
+  //   final docRef = availabilityCollection.doc(tutorId);
+  //
+  //   final docSnapshot = await docRef.get();
+  //
+  //   if (docSnapshot.exists) {
+  //     await docRef.update(data);
+  //   } else {
+  //     await docRef.set(data);
+  //   }
+  // }
 
   @override
   Future getMyAvailability(String tutorId) async{

@@ -49,7 +49,7 @@ class OnboardingSmall extends StatelessWidget {
                   () =>
                   CustomText(
                     text:
-                    "${onboardingController.currentUserType.value} login",
+                    onboardingController.currentUserType.value,
                     size: 18,
                     color: AppColors.white,
                   ),
@@ -66,7 +66,8 @@ class OnboardingSmall extends StatelessWidget {
                   Get.toNamed(Routes.authenticationPageRoute);
                 },
                 text: "Sign In",
-                textColor: AppColors.purple,
+                textColor: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.purple : AppColors.white,
+                bgColor: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.gold : AppColors.purple,
               ),
             ),
             SizedBox(height: 8),
@@ -79,7 +80,8 @@ class OnboardingSmall extends StatelessWidget {
                   Get.toNamed(Routes.authenticationPageRoute);
                 },
                 text: "Sign Out",
-                textColor: AppColors.purple,
+                textColor: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.purple : AppColors.white,
+                bgColor: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.gold : AppColors.purple,
               ),
             ),
 

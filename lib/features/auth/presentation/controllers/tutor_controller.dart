@@ -25,10 +25,11 @@ class TutorController extends GetxController {
   var register = false.obs;
   var students = <Student>[].obs;
   var tutor = Rx<Tutor?>(null);
+  Rx<Student?>? filteredEmail;
 
   RxMap<String, dynamic> availability = <String, dynamic>{}.obs;
 
-  final TextEditingController emailTEC = TextEditingController();
+  final emailTEC = TextEditingController(text: "@pvamu.edu");
 
   Future signIn() async {
     QuerySnapshot<Object?>? studentQuerySnapshot;
@@ -40,7 +41,7 @@ class TutorController extends GetxController {
             .get();
 
     if (querySnapshot?.size == 0) {
-      return CustomSnackBar.errorSnackBar("This account doesn't exist");
+      CustomSnackBar.errorSnackBar("This account doesn't exist");
     } else {
       tutor.value =
           await querySnapshot?.docs
@@ -121,7 +122,7 @@ class TutorController extends GetxController {
     var input = {selectedDay: "$start - $end"};
 
     if (tutor.value != null) {
-      await tutorRepo.setSchedule(input, tutor.value!.id!);
+      // await tutorRepo.setSchedule(input, tutor.value!.id!);
     }
   }
 
@@ -137,6 +138,7 @@ class TutorController extends GetxController {
 
     availability.value = data;
   }
+
 
   bool isPvamuEmail(String email) {
     return email.contains('@pvamu.edu');

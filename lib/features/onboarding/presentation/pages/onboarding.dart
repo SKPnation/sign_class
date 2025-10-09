@@ -61,7 +61,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Material(
       child: Container(
         padding: EdgeInsets.all(24),
-        color: AppColors.purple,
+        color: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.purple : AppColors.gold,
         child: Stack(
           children: [
             ResponsiveWidget.isSmallScreen(context)

@@ -8,6 +8,7 @@ import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
+import 'package:sign_class/features/onboarding/presentation/controllers/onboarding_controller.dart';
 
 class StudentView extends StatefulWidget {
   const StudentView({super.key});
@@ -17,7 +18,8 @@ class StudentView extends StatefulWidget {
 }
 
 class _StudentViewState extends State<StudentView> {
-  StudentController studentController = Get.put(StudentController());
+  final studentController = Get.put(StudentController());
+  final onboardingController = Get.put(OnboardingController());
 
   var existsByEmail = true;
   var emailErrorText = "";
@@ -35,7 +37,7 @@ class _StudentViewState extends State<StudentView> {
       child: Material(
         child: Container(
           padding: EdgeInsets.all(24),
-          color: AppColors.purple,
+          color: AppColors.gold,
           child: Obx(
             () => Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +52,7 @@ class _StudentViewState extends State<StudentView> {
                 ),
                 SizedBox(height: 80),
                 Text(
-                  studentController.authPageTitle.value,
+                  "${AppStrings.student} ${AppStrings.signIn}",
                   style: TextStyle(color: AppColors.white, fontSize: 18),
                 ),
                 SizedBox(height: 24),
@@ -63,7 +65,6 @@ class _StudentViewState extends State<StudentView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            // width: displayWidth(context) / 1.4,
                             child: TextField(
                               controller: studentController.emailTEC,
                               onChanged: (value) async {
@@ -84,7 +85,7 @@ class _StudentViewState extends State<StudentView> {
                                   color: AppColors.grey[200],
                                 ),
                                 labelStyle: TextStyle(
-                                  color: AppColors.grey[200],
+                                  color: AppColors.black,
                                 ),
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.auto,
@@ -338,15 +339,12 @@ class _StudentViewState extends State<StudentView> {
                                   ? "Sign out"
                                   : "Next",
                           textColor:
-                              studentController.authPageTitle.value !=
-                                      AppStrings.signOut
-                                  ? AppColors.purple
-                                  : AppColors.white,
+                          AppColors.white,
                           bgColor:
                               studentController.authPageTitle.value ==
                                       AppStrings.signOut
                                   ? Colors.red
-                                  : AppColors.gold,
+                                  : AppColors.purple,
                           fontSize: AppFonts.baseSize,
                         ),
                       ),
@@ -358,7 +356,8 @@ class _StudentViewState extends State<StudentView> {
                             Get.offNamed(Routes.onboardingRoute);
                           },
                           text: "Go back",
-                          textColor: AppColors.purple,
+                          textColor: AppColors.white,
+                          bgColor: AppColors.purple,
                           fontSize: AppFonts.baseSize,
                         ),
                       ),
