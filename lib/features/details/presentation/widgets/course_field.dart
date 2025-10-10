@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/details/data/models/course_model.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
@@ -137,7 +136,7 @@ class _CourseFieldState extends State<CourseField> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: Colors.purple,
+                    color: AppColors.purple,
                   ),
                 ),
               ),
@@ -155,7 +154,7 @@ class _CourseFieldState extends State<CourseField> {
                         "${course.code} ",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: AppColors.black,
                         ),
                       ),
                       Text("- ${course.name}"),
@@ -183,7 +182,7 @@ class _CourseFieldState extends State<CourseField> {
                             "${courses.firstWhere((c) => c.id == item.value).code}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: isSelected ? Colors.white : Colors.black,
+                              color: isSelected ? AppColors.white : AppColors.black,
                             ),
                           ),
                           const SizedBox(width: 4),
@@ -198,8 +197,8 @@ class _CourseFieldState extends State<CourseField> {
                                 fontWeight: FontWeight.normal,
                                 color:
                                     isSelected
-                                        ? Colors.white70
-                                        : Colors.black87,
+                                        ? AppColors.white
+                                        : AppColors.black,
                               ),
                             ),
                           ),
@@ -229,7 +228,7 @@ class _CourseFieldState extends State<CourseField> {
 
             hint: Text(
               "Select course",
-              style: TextStyle(color: AppColors.grey[200]),
+              style: TextStyle(color: AppColors.black),
             ),
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/core/global/custom_alert_dialog.dart';
 import 'package:sign_class/core/global/custom_button.dart';
-import 'package:sign_class/core/global/custom_snackbar.dart';
 import 'package:sign_class/core/global/custom_text.dart';
 import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/theme/colors.dart';
@@ -22,7 +21,6 @@ class _TutorViewState extends State<TutorView> {
   final onboardingController = Get.put(OnboardingController());
 
   var existsByEmail = true;
-  var emailErrorText = "";
 
   var sortedEntries = <MapEntry<String, dynamic>>[];
 
@@ -92,9 +90,9 @@ class _TutorViewState extends State<TutorView> {
                                 controller: tutorController.emailTEC,
                                 onChanged: (value) async {
                                   if (!tutorController.isPvamuEmail(value)) {
-                                    emailErrorText = AppStrings.mustBePvamuEmail;
+                                    tutorController.errorText.value = AppStrings.mustBePvamuEmail;
                                   } else {
-                                    emailErrorText = "";
+                                    tutorController.errorText.value = "";
                                   }
 
                                   // tutorController.onTextChanged(value);
@@ -154,13 +152,14 @@ class _TutorViewState extends State<TutorView> {
                                 ),
                               ),
                             ),
-                            if (emailErrorText.isNotEmpty)
+                            if (tutorController.errorText.value.isNotEmpty)
                               Text(
-                                emailErrorText,
-                                style: TextStyle(color: Colors.red),
+                                tutorController.errorText.value,
+                                style: TextStyle(color: Colors.red.shade200),
                               ),
                           ],
                         ),
+
                         SizedBox(height: 24),
 
                         CustomButton(onPressed: () =>tutorController.signIn(), text: "Sign In"),
@@ -170,15 +169,30 @@ class _TutorViewState extends State<TutorView> {
                       if (tutorController.tutor.value != null) ...[
                         Text(
                           "Signed in as: ${tutorController.tutor.value?.name}",
-                          style: const TextStyle(color: AppColors.black, fontSize: 16),
+                          style: const TextStyle(color: AppColors.white, fontSize: 16),
                         ),
 
                         // Student List
                         const SizedBox(height: 20),
                         const Text(
                           "Booked Students",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.white),
                         ),
+
+                        tutorController.students.isEmpty
+                            ? CustomText(text: "None", color: AppColors.white,)
+                            : ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: tutorController.students.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text("${tutorController.students[index].fName!} ${tutorController.students[index].lName!}"),
+                              textColor: Colors.white,
+                            );
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
 
                         tutorController.availability.isNotEmpty ?
                         SizedBox(

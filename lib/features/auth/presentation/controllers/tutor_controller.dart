@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sign_class/core/global/custom_alert_dialog.dart';
-import 'package:sign_class/core/global/custom_snackbar.dart';
 import 'package:sign_class/core/global/success_page.dart';
 import 'package:sign_class/features/auth/data/models/student_model.dart';
 import 'package:sign_class/features/auth/data/repos/student_repo_impl.dart';
@@ -26,6 +24,7 @@ class TutorController extends GetxController {
   var students = <Student>[].obs;
   var tutor = Rx<Tutor?>(null);
   Rx<Student?>? filteredEmail;
+  var errorText = "".obs;
 
   RxMap<String, dynamic> availability = <String, dynamic>{}.obs;
 
@@ -41,7 +40,7 @@ class TutorController extends GetxController {
             .get();
 
     if (querySnapshot?.size == 0) {
-      CustomSnackBar.errorSnackBar("This account doesn't exist");
+      errorText.value = "This account doesn't exist";
     } else {
       tutor.value =
           await querySnapshot?.docs
@@ -116,10 +115,10 @@ class TutorController extends GetxController {
     TimeOfDay endTime,
   ) async {
     selectedDay = selectedDay.toLowerCase();
-    final start = startTime.format(Get.context!); // e.g. "9:30 AM"
-    final end = endTime.format(Get.context!);
+    // final start = startTime.format(Get.context!); // e.g. "9:30 AM"
+    // final end = endTime.format(Get.context!);
 
-    var input = {selectedDay: "$start - $end"};
+    // var input = {selectedDay: "$start - $end"};
 
     if (tutor.value != null) {
       // await tutorRepo.setSchedule(input, tutor.value!.id!);

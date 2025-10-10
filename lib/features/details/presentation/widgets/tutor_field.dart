@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sign_class/core/constants/app_strings.dart';
-import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/core/theme/fonts.dart';
-import 'package:sign_class/features/details/data/models/tutor_model.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 
 class TutorField extends StatelessWidget {
@@ -36,7 +33,7 @@ class TutorField extends StatelessWidget {
         },
         hint: Center(child: Text(
           tutors.isEmpty ? "No assigned tutors, check student center" : "Select tutor",
-          style: TextStyle(color: AppColors.grey[200], fontSize: AppFonts.baseSize),
+          style: TextStyle(color: AppColors.black, fontSize: AppFonts.baseSize),
         ),),
         style: const TextStyle(color: Colors.white), // Selected text is white
         decoration: InputDecoration(

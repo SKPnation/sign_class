@@ -157,10 +157,10 @@ class OnboardingSmall extends StatelessWidget {
                               Container(
                                 margin: const EdgeInsets.only(bottom: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(.2), // light background
+                                  color: Colors.white.withValues(alpha: 0.2), // light background
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child:  ListTile(
+                                child: ListTile(
                                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                                   leading: CircleAvatar(
                                     backgroundColor: Colors.amber, // highlight circle
@@ -170,7 +170,7 @@ class OnboardingSmall extends StatelessWidget {
                                     ),
                                   ),
                                   title: Text(
-                                    '${student.fName?[0].toUpperCase()}${student.fName?.substring(1)} ${student.lName?[0].toUpperCase()}${student.lName?.substring(1)}',
+                                    '${firstName(student.fName!)} ${lastName(student.lName!)}',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -185,5 +185,31 @@ class OnboardingSmall extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String firstName(String fName) {
+    if (fName.length > 5) {
+      // Uppercase first letter, keep rest except last 3, then mask with ***
+      return "${fName[0].toUpperCase()}${fName.substring(1, fName.length - 3)}***";
+    } else if (fName.length > 3 && fName.length <= 5) {
+      // Uppercase first letter, keep rest except last 2, then mask with **
+      return "${fName[0].toUpperCase()}${fName.substring(1, fName.length - 2)}**";
+    } else {
+      // If short, just uppercase first letter
+      return fName[0].toUpperCase() + fName.substring(1);
+    }
+  }
+
+  String lastName(String lName) {
+    if (lName.length > 5) {
+      // Uppercase first letter, keep rest except last 3, then mask with ***
+      return "${lName[0].toUpperCase()}${lName.substring(1, lName.length - 3)}***";
+    } else if (lName.length > 3 && lName.length <= 5) {
+      // Uppercase first letter, keep rest except last 2, then mask with **
+      return "${lName[0].toUpperCase()}${lName.substring(1, lName.length - 2)}**";
+    } else {
+      // If short, just uppercase first letter
+      return lName[0].toUpperCase() + lName.substring(1);
+    }
   }
 }

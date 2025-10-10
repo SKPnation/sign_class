@@ -8,7 +8,7 @@ class AppStrings {
   static const signOut = "Sign Out";
 
   static const String slogan = "Excellence Lives Here";
-  static const String appTitle = "CE COMMONS CHECK-IN";
+  static const String appTitle = "CEE COMMONS CHECK-IN";
 
   static const student = "Student";
   static const tutor = "Tutor";

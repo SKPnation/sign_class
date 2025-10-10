@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sign_class/core/global/custom_text.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 
@@ -45,7 +44,7 @@ class _GoalFieldState extends State<GoalField> {
       },
       hint: Text(
         "Select your activity",
-        style: TextStyle(color: AppColors.grey[200]),
+        style: TextStyle(color: AppColors.black),
       ),
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,

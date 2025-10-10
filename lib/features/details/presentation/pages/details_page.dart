@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 import 'package:sign_class/features/auth/presentation/controllers/tutor_controller.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 import 'package:sign_class/features/details/presentation/pages/student_details_view.dart';
-import 'package:sign_class/features/details/presentation/pages/tutor_details_view.dart';
 import 'package:sign_class/features/onboarding/presentation/controllers/onboarding_controller.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -28,7 +26,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return Material(
       child: Container(
         padding: EdgeInsets.all(24),
-        color: AppColors.purple,
+        color: AppColors.gold,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -63,8 +63,8 @@ class OnboardingLarge extends StatelessWidget {
                         Get.toNamed(Routes.authenticationPageRoute);
                       },
                       text: "Sign In",
-                      textColor: AppColors.purple,
-                    ),
+                      textColor: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.purple : AppColors.white,
+                      bgColor: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.gold : AppColors.purple,                    ),
                   ),
                   SizedBox(height: 8),
                   SizedBox(
@@ -76,8 +76,8 @@ class OnboardingLarge extends StatelessWidget {
                         Get.toNamed(Routes.authenticationPageRoute);
                       },
                       text: "Sign Out",
-                      textColor: AppColors.purple,
-                    ),
+                      textColor: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.purple : AppColors.white,
+                      bgColor: onboardingController.currentUserType.value == AppStrings.tutor ? AppColors.gold : AppColors.purple,                    ),
                   ),
 
                   SizedBox(height: 24),
@@ -156,7 +156,7 @@ class OnboardingLarge extends StatelessWidget {
                           Container(
                             margin: const EdgeInsets.only(bottom: 8),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(.2), // light background
+                              color: Colors.white.withValues(alpha: 0.2), // light background
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child:  ListTile(
@@ -164,12 +164,12 @@ class OnboardingLarge extends StatelessWidget {
                               leading: CircleAvatar(
                                 backgroundColor: Colors.amber, // highlight circle
                                 child: Text(
-                                  student.nameLower!.substring(0, 1).toUpperCase(),
+                                  "${student.fName!.substring(0, 1).toUpperCase()}${student.lName!.substring(0, 1).toUpperCase()}",
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
                               title: Text(
-                                student.nameLower ?? '',
+                                '${firstName(student.fName!)} ${lastName(student.lName!)}',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
@@ -182,4 +182,31 @@ class OnboardingLarge extends StatelessWidget {
       ],
     );
   }
+
+  String firstName(String fName) {
+    if (fName.length > 5) {
+      // Uppercase first letter, keep rest except last 3, then mask with ***
+      return "${fName[0].toUpperCase()}${fName.substring(1, fName.length - 3)}***";
+    } else if (fName.length > 3 && fName.length <= 5) {
+      // Uppercase first letter, keep rest except last 2, then mask with **
+      return "${fName[0].toUpperCase()}${fName.substring(1, fName.length - 2)}**";
+    } else {
+      // If short, just uppercase first letter
+      return fName[0].toUpperCase() + fName.substring(1);
+    }
+  }
+
+  String lastName(String lName) {
+    if (lName.length > 5) {
+      // Uppercase first letter, keep rest except last 3, then mask with ***
+      return "${lName[0].toUpperCase()}${lName.substring(1, lName.length - 3)}***";
+    } else if (lName.length > 3 && lName.length <= 5) {
+      // Uppercase first letter, keep rest except last 2, then mask with **
+      return "${lName[0].toUpperCase()}${lName.substring(1, lName.length - 2)}**";
+    } else {
+      // If short, just uppercase first letter
+      return lName[0].toUpperCase() + lName.substring(1);
+    }
+  }
+
 }

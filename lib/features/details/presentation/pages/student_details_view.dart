@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/global/custom_button.dart';
-import 'package:sign_class/core/global/custom_text.dart';
-import 'package:sign_class/core/helpers/size_helpers.dart';
 import 'package:sign_class/core/theme/colors.dart';
+import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
 import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
 import 'package:sign_class/features/details/presentation/widgets/course_field.dart';
@@ -56,7 +55,6 @@ class _StudentDetailsViewState extends State<StudentDetailsView> {
 
           SizedBox(height: 24),
           SizedBox(
-            // width: displayWidth(context) / 1.4,
             child: CustomButton(
               onPressed: () async {
                 if (widget.studentController.register.value) {
@@ -65,8 +63,6 @@ class _StudentDetailsViewState extends State<StudentDetailsView> {
                     detailsController.selectedTutor?.value,
                   );
                 } else {
-                  print("sign in");
-
                   await widget.studentController.signIn(
                     detailsController.selectedCourse.value!,
                     tutor: detailsController.selectedTutor?.value,
@@ -74,22 +70,23 @@ class _StudentDetailsViewState extends State<StudentDetailsView> {
                 }
               },
               text: "Sign in",
-              textColor: AppColors.purple,
-              fontSize: 18,
+              textColor: AppColors.white,
+              bgColor: AppColors.purple,
+              fontSize: AppFonts.baseSize,
             ),
           ),
 
           SizedBox(height: 8),
 
           SizedBox(
-            // width: displayWidth(context) / 1.4,
             child: CustomButton(
               onPressed: () {
                 Get.back();
               },
               text: "Go back",
-              textColor: AppColors.purple,
-              fontSize: 18,
+              textColor: AppColors.white,
+              bgColor: AppColors.purple,
+              fontSize: AppFonts.baseSize,
             ),
           ),
         ],
