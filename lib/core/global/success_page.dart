@@ -23,7 +23,7 @@ class SuccessPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
+        child: Obx(()=>Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(ImageElements.pvamuLogo, height: 200, width: 200),
@@ -37,10 +37,10 @@ class SuccessPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'Signed ${studentController.authPageTitle.value == AppStrings.signIn ? "In" : "Out"} Successfully',
+              'Signed ${(studentController.authPageTitle.value == "${AppStrings.tutor} ${AppStrings.signIn}") || (studentController.authPageTitle.value == "${AppStrings.student} ${AppStrings.signIn}") ? "In" : "Out"} Successfully',
               style: TextStyle(fontSize: 18),
             ),
-            if (studentController.authPageTitle.value != AppStrings.signIn)
+            if ((studentController.authPageTitle.value != "${AppStrings.tutor} ${AppStrings.signIn}") || (studentController.authPageTitle.value != "${AppStrings.student} ${AppStrings.signIn}"))
               Column(
                 children: [
                   SizedBox(height: 10),
@@ -54,10 +54,10 @@ class SuccessPage extends StatelessWidget {
               child: CustomButton(
                 onPressed: () {
                   studentController.authPageTitle.value =
-                      onboardingController.currentUserType.value ==
-                              AppStrings.tutor
-                          ? "${AppStrings.tutor} ${AppStrings.signIn}"
-                          : "${AppStrings.student} ${AppStrings.signIn}";
+                  onboardingController.currentUserType.value ==
+                      AppStrings.tutor
+                      ? "${AppStrings.tutor} ${AppStrings.signIn}"
+                      : "${AppStrings.student} ${AppStrings.signIn}";
 
                   Get.off(OnboardingPage());
                 },
@@ -67,7 +67,7 @@ class SuccessPage extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        )),
       ),
     );
   }

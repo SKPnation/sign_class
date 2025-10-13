@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/core/global/success_page.dart';
 import 'package:sign_class/core/utils/functions.dart';
 import 'package:sign_class/features/auth/data/models/student_model.dart';
@@ -86,6 +87,8 @@ class StudentController extends GetxController {
 
     var name = "${querySnapshot!.docs.first['f_name']} ${querySnapshot!.docs.first['l_name']}";
 
+    authPageTitle.value = "${AppStrings.student} ${AppStrings.signIn}";
+
     Get.to(SuccessPage(userName: name));
 
     firstNameTEC.clear();
@@ -145,10 +148,7 @@ class StudentController extends GetxController {
     final docSnapshot = await studentRepo.studentsCollection.doc(querySnapshot!.docs.first.id).get();
     final output = docSnapshot.data() as Map<String, dynamic>;
 
-
-
     studentRepo.deleteUser(querySnapshot!.docs.first.id);
-
     onboardingController.numOfSignedInStudents.value--;
 
     var name = "${querySnapshot!.docs.first['f_name']} ${querySnapshot!.docs.first['l_name']}";
@@ -157,6 +157,7 @@ class StudentController extends GetxController {
 
     Duration duration = timeOut.difference(timeIn);
 
+    authPageTitle.value = "${AppStrings.student} ${AppStrings.signOut}";
 
     Get.to(SuccessPage(userName: name, timeSpent: formatDuration(duration)));  }
 
