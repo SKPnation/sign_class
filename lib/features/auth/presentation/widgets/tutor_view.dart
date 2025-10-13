@@ -46,13 +46,15 @@ class _TutorViewState extends State<TutorView> {
         // });
       },
       child: Material(
-        child: Obx((){
+        child: Obx(() {
           if (tutorController.availability.isNotEmpty) {
             // Sort the map into a list of entries based on weekday order
-            sortedEntries = tutorController.availability.entries.toList()
-              ..sort((a, b) =>
-                  weekdayOrder.indexOf(a.key.toLowerCase())
-                      .compareTo(weekdayOrder.indexOf(b.key.toLowerCase())));
+            sortedEntries =
+                tutorController.availability.entries.toList()..sort(
+                  (a, b) => weekdayOrder
+                      .indexOf(a.key.toLowerCase())
+                      .compareTo(weekdayOrder.indexOf(b.key.toLowerCase())),
+                );
           }
 
           return Container(
@@ -90,7 +92,8 @@ class _TutorViewState extends State<TutorView> {
                                 controller: tutorController.emailTEC,
                                 onChanged: (value) async {
                                   if (!tutorController.isPvamuEmail(value)) {
-                                    tutorController.errorText.value = AppStrings.mustBePvamuEmail;
+                                    tutorController.errorText.value =
+                                        AppStrings.mustBePvamuEmail;
                                   } else {
                                     tutorController.errorText.value = "";
                                   }
@@ -109,9 +112,9 @@ class _TutorViewState extends State<TutorView> {
                                     color: AppColors.grey[200],
                                   ),
                                   floatingLabelBehavior:
-                                  FloatingLabelBehavior.auto,
+                                      FloatingLabelBehavior.auto,
                                   floatingLabelAlignment:
-                                  FloatingLabelAlignment.start,
+                                      FloatingLabelAlignment.start,
 
                                   // define a single border style to reuse
                                   border: OutlineInputBorder(
@@ -162,73 +165,113 @@ class _TutorViewState extends State<TutorView> {
 
                         SizedBox(height: 24),
 
-                        CustomButton(onPressed: () =>tutorController.signIn(), text: "Sign In"),
+                        CustomButton(
+                          onPressed: () => tutorController.signIn(),
+                          text: "Sign In",
+                        ),
                       ],
 
                       //tutor is "signed in" state
                       if (tutorController.tutor.value != null) ...[
                         Text(
                           "Signed in as: ${tutorController.tutor.value?.name}",
-                          style: const TextStyle(color: AppColors.white, fontSize: 16),
+                          style: const TextStyle(
+                            color: AppColors.white,
+                            fontSize: 16,
+                          ),
                         ),
 
                         // Student List
                         const SizedBox(height: 20),
                         const Text(
                           "Booked Students",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.white),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.white,
+                          ),
                         ),
 
                         tutorController.students.isEmpty
-                            ? CustomText(text: "None", color: AppColors.white,)
+                            ? CustomText(text: "None", color: AppColors.white)
                             : ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: tutorController.students.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text("${tutorController.students[index].fName!} ${tutorController.students[index].lName!}"),
-                              textColor: Colors.white,
-                            );
-                          },
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        tutorController.availability.isNotEmpty ?
-                        SizedBox(
-                          width: 200,
-                          child: CustomButton(
-                            bgColor: AppColors.gold,
-                            onPressed: () {
-                              Get.dialog(CustomAlertDialog(
-                                  title: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [Text("My availability")],
+                              shrinkWrap: true,
+                              itemCount: tutorController.students.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text(
+                                    "${tutorController.students[index].fName!} ${tutorController.students[index].lName!}",
                                   ),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: sortedEntries.map((e) {
-                                      var heading = e.key;
-                                      var body = e.value;
+                                  textColor: Colors.white,
+                                );
+                              },
+                            ),
 
-                                      return Column(
-                                        children: [
-                                          Text(
-                                            heading[0].toUpperCase() + heading.substring(1), // Capitalize
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                          ),
-                                          Text(
-                                            body.toString(),
-                                            style: const TextStyle(fontSize: 14),
-                                          ),
-                                        ],
-                                      );
-                                    }).toList(),
-                                  )));
-                            },
-                            child: CustomText(text: "View", color: AppColors.white),
-                          ),
-                        ) : SizedBox()
+                        tutorController.availability.isNotEmpty
+                            ? SizedBox(
+                              width: 200,
+                              child: CustomButton(
+                                bgColor: AppColors.gold,
+                                onPressed: () {
+                                  Get.dialog(
+                                    CustomAlertDialog(
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [Text("My availability")],
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children:
+                                            sortedEntries.map((e) {
+                                              var heading = e.key;
+                                              var body = e.value;
+
+                                              return Column(
+                                                children: [
+                                                  Text(
+                                                    heading[0].toUpperCase() +
+                                                        heading.substring(1),
+                                                    // Capitalize
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    body.toString(),
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }).toList(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: CustomText(
+                                  text: "View",
+                                  color: AppColors.white,
+                                ),
+                              ),
+                            )
+                            : SizedBox(),
+
+                        tutorController.availability.isNotEmpty
+                            ? const SizedBox(height: 20)
+                            : SizedBox(),
+
+                        CustomButton(
+                          onPressed: () {
+
+                          },
+                          text: "Sign out",
+                          bgColor: AppColors.red,
+                          textColor: AppColors.white,
+                        ),
                       ],
                     ],
                   ),

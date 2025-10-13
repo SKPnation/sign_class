@@ -17,7 +17,7 @@ class TutorField extends StatelessWidget {
 
       return DropdownButtonFormField<String>(
         isExpanded: true,
-        value: selectedTutorId,
+        initialValue: selectedTutorId,
         icon: tutors.isEmpty ? const SizedBox.shrink() : const Icon(Icons.arrow_drop_down_sharp),
         items: tutors.map((tutor) {
           return DropdownMenuItem<String>(
@@ -32,7 +32,7 @@ class TutorField extends StatelessWidget {
           detailsController.selectedTutor?.value = tutor;
         },
         hint: Center(child: Text(
-          tutors.isEmpty ? "No assigned tutors, check student center" : "Select tutor",
+          tutors.isEmpty ? "No assigned tutors, check Student Success Center (CL WILSON 208)" : "Select tutor",
           style: TextStyle(color: AppColors.black, fontSize: AppFonts.baseSize),
         ),),
         style: const TextStyle(color: Colors.white), // Selected text is white
