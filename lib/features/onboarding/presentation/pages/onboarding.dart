@@ -78,7 +78,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
             Align(
               alignment: Alignment.bottomLeft,
-              child: CustomText(text: "1.0.1", color: AppColors.purpleDarker),
+              child: CustomText(text: "1.0.0+1", color: AppColors.purpleDarker),
             ),
           ],
         ),
