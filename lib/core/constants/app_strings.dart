@@ -1,8 +1,7 @@
 class AppStrings {
   static const userType = "user_type";
 
-  static const homeTitle = "Home";
-  static const detailsPageTitle = "Details";
+  static const purpose = "Purpose";
 
   static const signIn = "Sign In";
   static const signOut = "Sign Out";

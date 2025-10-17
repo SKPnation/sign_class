@@ -1,16 +1,15 @@
 import 'package:get/get.dart';
-import 'package:sign_class/features/auth/presentation/controllers/student_controller.dart';
-import 'package:sign_class/features/auth/presentation/controllers/tutor_controller.dart';
-import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
-import 'package:sign_class/features/onboarding/presentation/controllers/onboarding_controller.dart';
+import 'package:sign_class/features/controllers/onboarding_controller.dart';
+import 'package:sign_class/features/tutor/presentation/auth/controllers/tutor_auth_controller.dart';
 
 class AllControllerBinding extends Bindings{
   @override
   void dependencies() {
-    Get.lazyPut(() => StudentController());
     Get.lazyPut(() => OnboardingController());
-    Get.lazyPut(() => DetailsController());
-    Get.lazyPut(() => TutorController());
+    Get.lazyPut(() => TutorAuthController());
+    // Get.lazyPut(() => StudentAuthController());
+    // Get.lazyPut(() => DetailsController());
+    // Get.lazyPut(() => TutorController());
   }
 }
 
