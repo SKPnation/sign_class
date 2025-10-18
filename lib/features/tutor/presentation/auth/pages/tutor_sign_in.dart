@@ -8,7 +8,7 @@ import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/features/tutor/presentation/auth/controllers/tutor_auth_controller.dart';
 
 class TutorSignIn extends StatefulWidget {
-  TutorSignIn({super.key});
+  const TutorSignIn({super.key});
 
   @override
   State<TutorSignIn> createState() => _TutorSignInState();
@@ -30,13 +30,11 @@ class _TutorSignInState extends State<TutorSignIn> {
           child: Obx(()=>Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Center(
-                child: Image.asset(
-                  ImageElements.pvamuLogo,
-                  width: 180,
-                  height: 160,
-                  fit: BoxFit.contain, // Ensure image fits
-                ),
+              Image.asset(
+                ImageElements.pvamuLogo,
+                width: 180,
+                height: 160,
+                fit: BoxFit.contain, // Ensure image fits
               ),
               SizedBox(height: 80),
               CustomText(

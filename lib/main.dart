@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/app.dart';
 import 'package:sign_class/features/controllers/onboarding_controller.dart';
+import 'package:sign_class/features/student/presentation/auth/controllers/student_auth_controller.dart';
 import 'package:sign_class/features/tutor/presentation/auth/controllers/tutor_auth_controller.dart';
 import 'package:sign_class/core/utils/firebase_options.dart';
 
@@ -18,6 +19,7 @@ Future<void> main() async {
   // Option A: register controller after Firebase is ready
   Get.put<OnboardingController>(OnboardingController());
   Get.put<TutorAuthController>(TutorAuthController());
+  Get.put<StudentAuthController>(StudentAuthController());
 
   runApp(const App());
 }

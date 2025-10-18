@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/features/student/data/repos/student_repo_impl.dart';
+import 'package:sign_class/features/student/presentation/onboarding/pages/student_onboarding.dart';
 import 'package:sign_class/features/tutor/presentation/onboarding/pages/tutor_onboarding.dart';
 
 import '../student/data/models/student_model.dart';
@@ -14,7 +15,7 @@ class OnboardingController extends GetxController {
 
   var currentUserType = AppStrings.student.obs;
 
-  totalSignedIn() async{
+  totalSignedIn() async {
     numOfSignedInStudents.value = await studentRepo.getTotalSignedInStudents();
   }
 
@@ -25,12 +26,9 @@ class OnboardingController extends GetxController {
 
   void chooseStudent() {
     currentUserType.value = AppStrings.student;
-    // Get.to(StudentOnboarding());
-
-    //TODO:Navigate to student onboarding page
+    Get.to(StudentOnboarding());
   }
 
   Future<List<Student>> getSignedInStudentsList() async =>
       await studentRepo.getSignedInStudentsList();
-
 }

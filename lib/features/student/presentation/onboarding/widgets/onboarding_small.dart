@@ -9,6 +9,7 @@ import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/controllers/onboarding_controller.dart';
 import 'package:sign_class/features/student/data/models/student_model.dart';
+import 'package:sign_class/features/student/presentation/auth/pages/student_sign_in.dart';
 import 'package:sign_class/features/tutor/presentation/onboarding/pages/tutor_onboarding.dart';
 
 class StudentOnboardingSmall extends StatefulWidget {
@@ -79,8 +80,8 @@ class _StudentOnboardingSmallState extends State<StudentOnboardingSmall> {
                 width: 300,
                 child: CustomButton(
                   onPressed: () {
-                    //Go to tutor sign in page
-                    // Get.to(StudentSignIn());
+                    //Go to student sign in page
+                    Get.to(StudentSignIn());
                   },
                   text: "Sign In",
                   textColor: AppColors.white,
