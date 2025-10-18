@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sign_class/features/student/data/models/tutor_model.dart';
 
-import 'tutor_model.dart';
 
 class Course {
   final String? id;

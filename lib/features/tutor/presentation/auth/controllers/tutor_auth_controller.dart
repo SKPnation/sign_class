@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/global/sign_out_success.dart';
 import 'package:sign_class/core/utils/functions.dart';
-import 'package:sign_class/features/details/data/models/tutor_model.dart';
 import 'package:sign_class/features/student/data/models/student_model.dart';
+import 'package:sign_class/features/student/data/models/tutor_model.dart';
 import 'package:sign_class/features/student/data/repos/student_repo_impl.dart';
 import 'package:sign_class/features/tutor/data/tutor_repo_impl.dart';
 import 'package:sign_class/features/tutor/presentation/profile/pages/tutor_profile_page.dart';
@@ -92,19 +92,6 @@ class TutorAuthController extends GetxController {
 
   }
 
-  Future getAvailability() async {
-    final tutorId = tutor.value?.id;
-
-    if (tutorId == null) {
-      print("Tutor or tutor ID is null, cannot fetch availability.");
-      return;
-    }
-
-    final data = await tutorRepo.getMyAvailability(tutorId);
-
-    availability.value = data;
-  }
-
   Future signOut() async {
     querySnapshot =
     await tutorRepo.tutorsCollection
@@ -130,4 +117,36 @@ class TutorAuthController extends GetxController {
     tutor.value = null;
 
     Get.off(SignOutSuccessPage(userName: userName, timeSpent: formatDuration(duration)));
-  }}
+  }
+
+  Future getAvailability() async {
+    final tutorId = tutor.value?.id;
+
+    if (tutorId == null) {
+      print("Tutor or tutor ID is null, cannot fetch availability.");
+      return;
+    }
+
+    final data = await tutorRepo.getMyAvailability(tutorId);
+
+    availability.value = data;
+  }
+
+  //TODO: Use this in the admin portal
+  // Future setSchedule(
+  //     String selectedDay,
+  //     TimeOfDay startTime,
+  //     TimeOfDay endTime,
+  //     ) async {
+  //   selectedDay = selectedDay.toLowerCase();
+  //   // final start = startTime.format(Get.context!); // e.g. "9:30 AM"
+  //   // final end = endTime.format(Get.context!);
+  //
+  //   // var input = {selectedDay: "$start - $end"};
+  //
+  //   if (tutor.value != null) {
+  //     // await tutorRepo.setSchedule(input, tutor.value!.id!);
+  //   }
+  // }
+
+}

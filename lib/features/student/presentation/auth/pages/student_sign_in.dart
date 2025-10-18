@@ -9,6 +9,7 @@ import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/controllers/onboarding_controller.dart';
 import 'package:sign_class/features/student/presentation/auth/controllers/student_auth_controller.dart';
 import 'package:sign_class/features/student/presentation/onboarding/pages/student_onboarding.dart';
+import 'package:sign_class/features/student/presentation/purpose/pages/purpose_page.dart';
 
 class StudentSignIn extends StatefulWidget {
   const StudentSignIn({super.key});
@@ -256,9 +257,9 @@ class _StudentSignInState extends State<StudentSignIn> {
                               studentAuthController.isPvamuEmail(
                                 studentAuthController.emailTEC.text,
                               )) {
-                            //TODO: Go to student's purpose page
+                            Get.to(PurposePage());
                           } else if (existsByEmail) {
-                            //TODO: Go to student's purpose page
+                            Get.to(PurposePage());
                           }
 
                           setState(() {});

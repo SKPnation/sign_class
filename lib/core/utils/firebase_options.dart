@@ -22,8 +22,6 @@ class DefaultFirebaseOptions {
     }
   }
 
-  // 🔹 Replace the values below with those from your Firebase Console
-
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: "AIzaSyD--sT_bY-9dXT2dgAhymsAEPCEdFYh7BM",
     appId: "1:757260583433:web:627fe15ebb56e11865eed8",
@@ -33,7 +31,6 @@ class DefaultFirebaseOptions {
     storageBucket: "pvamu-student-sign-in.appspot.com",
     measurementId: "G-K99SQFSL9H"
   );
-
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: "YOUR_ANDROID_API_KEY",

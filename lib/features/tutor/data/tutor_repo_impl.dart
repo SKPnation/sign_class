@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sign_class/features/tutor/domain/tutor_repo.dart';
-import 'package:sign_class/features/details/data/models/tutor_model.dart';
 
 abstract class _Keys {
   static const tutors = 'tutors';

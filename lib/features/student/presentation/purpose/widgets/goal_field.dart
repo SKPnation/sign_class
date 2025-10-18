@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sign_class/core/theme/colors.dart';
-import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
+import 'package:sign_class/features/student/presentation/purpose/controllers/purpose_controller.dart';
 
 class GoalField extends StatefulWidget {
-  const GoalField({super.key, required this.detailsController, this.onChanged});
+  const GoalField({super.key, required this.purposeController, this.onChanged});
 
-  final DetailsController detailsController;
+  final PurposeController purposeController;
   final Function()? onChanged;
 
   @override
@@ -17,18 +17,18 @@ class _GoalFieldState extends State<GoalField> {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
       isExpanded: true,
-      value: widget.detailsController.selectedGoal.value.isEmpty
+      value: widget.purposeController.selectedGoal.value.isEmpty
           ? null
-          : widget.detailsController.selectedGoal.value,
+          : widget.purposeController.selectedGoal.value,
       selectedItemBuilder: (context) {
-        return widget.detailsController.options.map((goal) {
+        return widget.purposeController.options.map((goal) {
           return Text(
             goal,
             style: TextStyle(color: AppColors.white), // selected value
           );
         }).toList();
       },
-      items: widget.detailsController.options.map((goal) => DropdownMenuItem<String>(
+      items: widget.purposeController.options.map((goal) => DropdownMenuItem<String>(
         value: goal,
         child: Text(
           goal,// dropdown items text color
@@ -37,7 +37,7 @@ class _GoalFieldState extends State<GoalField> {
       onChanged: (value) {
         setState(() {
           if (value != null) {
-            widget.detailsController.selectedGoal.value = value;
+            widget.purposeController.selectedGoal.value = value;
           }
         });
         widget.onChanged!();

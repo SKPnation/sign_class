@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/core/theme/fonts.dart';
-import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
+import 'package:sign_class/features/student/presentation/purpose/controllers/purpose_controller.dart';
 
 class TutorField extends StatefulWidget {
-  final DetailsController detailsController;
-  const TutorField({super.key, required this.detailsController});
+  final PurposeController purposeController;
+  const TutorField({super.key, required this.purposeController});
 
   @override
   State<TutorField> createState() => _TutorFieldState();
@@ -22,8 +22,8 @@ class _TutorFieldState extends State<TutorField> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final tutors = widget.detailsController.selectedCourse.value?.assignedTutors ?? [];
-      final selectedTutorId = widget.detailsController.selectedTutor?.value.id;
+      final tutors = widget.purposeController.selectedCourse.value?.assignedTutors ?? [];
+      final selectedTutorId = widget.purposeController.selectedTutor?.value.id;
 
       final bool hasTutors = tutors.isNotEmpty;
       final hintText = hasTutors
@@ -41,7 +41,7 @@ class _TutorFieldState extends State<TutorField> {
         ),
         child: DropdownButtonFormField<String>(
           isExpanded: true,
-          value: hasTutors ? selectedTutorId : null,
+          initialValue: hasTutors ? selectedTutorId : null,
           icon: hasTutors ? const Icon(Icons.arrow_drop_down_sharp) : const SizedBox.shrink(),
           items: tutors.map((tutor) {
             return DropdownMenuItem<String>(
@@ -53,7 +53,7 @@ class _TutorFieldState extends State<TutorField> {
               ? (value) {
             if (value == null) return;
             final tutor = tutors.firstWhere((t) => t.id == value);
-            widget.detailsController.selectedTutor?.value = tutor;
+            widget.purposeController.selectedTutor?.value = tutor;
           }
               : null,
           hint: Center(

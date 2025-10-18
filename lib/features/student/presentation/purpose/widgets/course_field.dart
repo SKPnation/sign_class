@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sign_class/core/theme/colors.dart';
-import 'package:sign_class/features/details/data/models/course_model.dart';
-import 'package:sign_class/features/details/presentation/controllers/details_controller.dart';
+import 'package:sign_class/features/student/data/models/course_model.dart';
+import 'package:sign_class/features/student/presentation/purpose/controllers/purpose_controller.dart';
 
 class CourseField extends StatefulWidget {
   const CourseField({
     super.key,
-    required this.detailsController,
+    required this.purposeController,
     this.onChanged,
   });
 
-  final DetailsController detailsController;
+  final PurposeController purposeController;
   final Function()? onChanged;
 
   @override
@@ -23,17 +23,17 @@ class _CourseFieldState extends State<CourseField> {
   double getDynamicHeight(String text) {
     // Example: 20 px per line, with ~40 chars per line
     int lines = (text.length / 30).ceil();
-    return (lines * 26.0) + 30.0; // base padding
+    return (lines * 26.0) + 50.0; // base padding
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height:
-          widget.detailsController.selectedCourse.value == null
+          widget.purposeController.selectedCourse.value == null
               ? null
               : getDynamicHeight(
-                widget.detailsController.selectedCourse.value!.name!,
+                widget.purposeController.selectedCourse.value!.name!,
               ),
 
       decoration: BoxDecoration(
@@ -41,7 +41,7 @@ class _CourseFieldState extends State<CourseField> {
         border: Border.all(width: 1, color: Colors.white),
       ),
       child: FutureBuilder(
-        future: widget.detailsController.getCourses(),
+        future: widget.purposeController.getCourses(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -66,9 +66,9 @@ class _CourseFieldState extends State<CourseField> {
 
           // initialize selectedCourseId only once
           if (selectedCourseId == null &&
-              widget.detailsController.selectedCourse.value != null) {
+              widget.purposeController.selectedCourse.value != null) {
             selectedCourseId =
-                widget.detailsController.selectedCourse.value!.id;
+                widget.purposeController.selectedCourse.value!.id;
           }
 
           // Grouping logic
@@ -167,7 +167,7 @@ class _CourseFieldState extends State<CourseField> {
 
           return DropdownButtonFormField<String>(
             isExpanded: true,
-            value: selectedCourseId,
+            initialValue: selectedCourseId,
             items:
                 dropdownItems.map((item) {
                   // Only style non-header items (skip disabled headers)
@@ -217,7 +217,7 @@ class _CourseFieldState extends State<CourseField> {
               final course = courses.firstWhere((c) => c.id == value);
 
               // Update the reactive variable directly
-              widget.detailsController.selectedCourse.value = course;
+              widget.purposeController.selectedCourse.value = course;
 
               print("selected course: $value");
               print(

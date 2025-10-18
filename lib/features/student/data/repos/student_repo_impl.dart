@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sign_class/core/data/local/get_store.dart';
-import 'package:sign_class/features/details/data/models/course_model.dart';
-import 'package:sign_class/features/details/data/models/tutor_model.dart';
-import 'package:sign_class/features/details/data/repos/courses_repo_impl.dart';
+import 'package:sign_class/features/student/data/models/course_model.dart';
+import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/student/data/repos/courses_repo_impl.dart';
 import 'package:sign_class/features/student/data/models/student_model.dart';
 import 'package:sign_class/features/student/domain/repos/student_repo.dart';
 
