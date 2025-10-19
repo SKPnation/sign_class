@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sign_class/core/global/sign_out_success.dart';
+import 'package:sign_class/core/utils/functions.dart';
 import 'package:sign_class/features/controllers/onboarding_controller.dart';
 import 'package:sign_class/features/student/data/models/course_model.dart';
 import 'package:sign_class/features/student/data/models/tutor_model.dart';
 import 'package:sign_class/features/student/data/repos/courses_repo_impl.dart';
 import 'package:sign_class/features/student/data/models/student_model.dart';
 import 'package:sign_class/features/student/data/repos/student_repo_impl.dart';
+import 'package:sign_class/features/student/presentation/profile/pages/student_profile_page.dart';
 import 'package:sign_class/features/student/presentation/purpose/controllers/purpose_controller.dart';
 import 'package:sign_class/features/tutor/data/tutor_repo_impl.dart';
 
@@ -21,6 +24,9 @@ class StudentAuthController extends GetxController {
   final emailTEC = TextEditingController(text: "@pvamu.edu");
   final TextEditingController firstNameTEC = TextEditingController();
   final TextEditingController lastNameTEC = TextEditingController();
+
+  final firstName = "".obs;
+  final lastName = "".obs;
 
   var register = false.obs;
 
@@ -65,27 +71,30 @@ class StudentAuthController extends GetxController {
   }
 
   addStudent(Course course, Tutor? tutor) async {
-    Student studentModel = Student(
-      id: studentRepo.studentsCollection.doc().id,
-      fName: firstNameTEC.text,
-      lName: lastNameTEC.text,
-      email: emailTEC.text,
-      createdAt: DateTime.now(),
-      timeIn: DateTime.now(),
-    );
-
-    await studentRepo.createStudent(studentModel, course, tutor);
-    onboardingController.numOfSignedInStudents.value++;
-
-    // Get.to(SuccessPage(userName: "${firstNameTEC.text} ${lastNameTEC.text}"));
-
-    firstNameTEC.clear();
-    lastNameTEC.clear();
-    emailTEC.clear();
-    PurposeController.instance.selectedCourse.value = null;
+    print("Add student");
+    // Student studentModel = Student(
+    //   id: studentRepo.studentsCollection.doc().id,
+    //   fName: firstNameTEC.text,
+    //   lName: lastNameTEC.text,
+    //   email: emailTEC.text,
+    //   createdAt: DateTime.now(),
+    //   timeIn: DateTime.now(),
+    // );
+    //
+    // await studentRepo.createStudent(studentModel, course, tutor);
+    // onboardingController.numOfSignedInStudents.value++;
+    //
+    // // Get.to(SuccessPage(userName: "${firstNameTEC.text} ${lastNameTEC.text}"));
+    //
+    // firstNameTEC.clear();
+    // lastNameTEC.clear();
+    // emailTEC.clear();
+    // PurposeController.instance.selectedCourse.value = null;
   }
 
   Future signIn(Course course, {Tutor? tutor}) async {
+    print("sign in student");
+
     querySnapshot = await studentRepo.studentsCollection
         .where('email', isEqualTo: emailTEC.text)
         .limit(1)
@@ -102,18 +111,12 @@ class StudentAuthController extends GetxController {
     await studentRepo.updateUser(data);
     onboardingController.numOfSignedInStudents.value++;
 
-    var name = "${querySnapshot!.docs.first['f_name']} ${querySnapshot!.docs.first['l_name']}";
+    firstName.value = querySnapshot!.docs.first['f_name'];
+    lastName.value = querySnapshot!.docs.first['l_name'];
 
-    //TODO: Put in navigation to profile page
-    // Get.to(ProfilePage());
+    // TODO: Put in navigation to profile page
+    Get.to(StudentProfilePage());
 
-    firstNameTEC.clear();
-    lastNameTEC.clear();
-    // emailTEC.clear(); //TODO: UNCOMMENT
-
-    // Correctly reset selected course and tutor
-    PurposeController.instance.selectedCourse.value = null;
-    // PurposeController.instance.selectedTutor.value = null;
   }
 
   Future signOut() async {
@@ -125,7 +128,6 @@ class StudentAuthController extends GetxController {
 
     Map<String, dynamic> data = querySnapshot!.docs.first.data() as Map<String, dynamic>;
 
-    var userName = data['name'];
     var timeIn = (data['time_in'] as Timestamp).toDate();
     var timeOut = DateTime.now();
 
@@ -137,8 +139,8 @@ class StudentAuthController extends GetxController {
     };
 
     await studentRepo.updateUser(input);
-
-    //TODO: Go to success page
-    // Get.to(SuccessPage(userName: name));
+    //
+    // //TODO: Go to success page
+    Get.to(SignOutSuccessPage(userName: "${firstName.value} ${lastName.value}", timeSpent: formatDuration(duration)));
   }
 }

@@ -77,17 +77,17 @@ class _PurposePageState extends State<PurposePage> {
                 width: 250,
                 child: CustomButton(
                   onPressed: () async {
-                    // if (studentAuthController.register.value) {
-                    //   studentAuthController.addStudent(
-                    //     purposeController.selectedCourse.value!,
-                    //     purposeController.selectedTutor?.value,
-                    //   );
-                    // } else {
-                    //   await studentAuthController.signIn(
-                    //     purposeController.selectedCourse.value!,
-                    //     tutor: purposeController.selectedTutor?.value,
-                    //   );
-                    // }
+                    if (studentAuthController.register.value) {
+                      studentAuthController.addStudent(
+                        purposeController.selectedCourse.value!,
+                        purposeController.selectedTutor?.value,
+                      );
+                    } else {
+                      await studentAuthController.signIn(
+                        purposeController.selectedCourse.value!,
+                        tutor: purposeController.selectedTutor?.value,
+                      );
+                    }
                   },
                   text: "Check in",
                   textColor: AppColors.white,

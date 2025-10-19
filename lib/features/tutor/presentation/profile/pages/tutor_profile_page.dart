@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sign_class/core/global/custom_alert_dialog.dart';
 import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/global/custom_text.dart';
 import 'package:sign_class/core/theme/colors.dart';

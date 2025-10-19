@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/global/custom_text.dart';
 import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/theme/colors.dart';
+import 'package:sign_class/features/controllers/onboarding_controller.dart';
+import 'package:sign_class/features/student/presentation/onboarding/pages/student_onboarding.dart';
 import 'package:sign_class/features/tutor/presentation/onboarding/pages/tutor_onboarding.dart';
 
 class SignOutSuccessPage extends StatelessWidget {
@@ -42,7 +45,11 @@ class SignOutSuccessPage extends StatelessWidget {
             SizedBox(width: 250,
             child: CustomButton(
               onPressed: () {
-                Get.off(TutorOnboarding());
+                if(OnboardingController.instance.currentUserType.value == AppStrings.tutor){
+                  Get.off(TutorOnboarding());
+                }else{
+                  Get.off(StudentOnboarding());
+                }
               },
               text: "Done",
               textColor: AppColors.white,
