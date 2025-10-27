@@ -12,7 +12,7 @@ class PurposeController extends GetxController{
   var selectedGoal = "".obs;
 
   Rx<Course?> selectedCourse = Rx<Course?>(null);
-  Rx<Tutor>? selectedTutor;
+  final selectedTutor  = Rxn<Tutor>(); // <-- initialize, not nullable Rx?
 
   Future<List<Course>> getCourses() async =>
       await coursesRepo.getCoursesWithTutors();

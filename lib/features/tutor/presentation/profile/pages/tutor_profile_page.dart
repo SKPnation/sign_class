@@ -31,94 +31,99 @@ class _TutorProfilePageState extends State<TutorProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Obx((){
+        child: Obx(() {
           if (tutorAuthController.availability.isNotEmpty) {
             // Sort the map into a list of entries based on weekday order
             sortedEntries =
-            tutorAuthController.availability.entries.toList()..sort(
+                tutorAuthController.availability.entries.toList()..sort(
                   (a, b) => weekdayOrder
-                  .indexOf(a.key.toLowerCase())
-                  .compareTo(weekdayOrder.indexOf(b.key.toLowerCase())),
-            );
+                      .indexOf(a.key.toLowerCase())
+                      .compareTo(weekdayOrder.indexOf(b.key.toLowerCase())),
+                );
           }
 
           return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomText(text: "Profile", weight: FontWeight.bold),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomText(text: "Profile", weight: FontWeight.bold),
 
-                SizedBox(height: 30),
+              SizedBox(height: 30),
 
-                CircleAvatar(
-                  radius: 50,
-                  // adjust size
-                  backgroundColor: Colors.grey[300],
-                  // backgroundImage: tutorAuthController.tutor.value?.profileImage != null
-                  //     ? NetworkImage(tutorAuthController.tutor.value?.profileImage!)
-                  //     : null,
-                  child: Icon(Icons.person, size: 50, color: Colors.white),
+              CircleAvatar(
+                radius: 50,
+                // adjust size
+                backgroundColor: Colors.grey[300],
+                // backgroundImage: tutorAuthController.tutor.value?.profileImage != null
+                //     ? NetworkImage(tutorAuthController.tutor.value?.profileImage!)
+                //     : null,
+                child: Icon(Icons.person, size: 50, color: Colors.white),
 
-                  // tutor?.profileImage == null
-                  //     ? const Icon(
-                  //   Icons.person,
-                  //   size: 50,
-                  //   color: Colors.white,
-                  // )
-                  //     : null,
-                ),
+                // tutor?.profileImage == null
+                //     ? const Icon(
+                //   Icons.person,
+                //   size: 50,
+                //   color: Colors.white,
+                // )
+                //     : null,
+              ),
 
-                SizedBox(height: 40),
+              SizedBox(height: 40),
 
-                CustomText(
-                  text: "Signed in as: ${tutorAuthController.tutor.value?.name}",
-                  size: 16,
-                ),
+              CustomText(
+                text:
+                    "Signed in as: ${tutorAuthController.tutor.value?.fName} ${tutorAuthController.tutor.value?.lName}",
+                size: 16,
+              ),
 
-                SizedBox(height: 24),
+              SizedBox(height: 24),
 
-                const Text(
-                  "Booked Students",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
+              const Text(
+                "Booked Students",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
 
-                tutorAuthController.students.isEmpty
-                    ? const CustomText(text: "None")
-                    : Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: tutorAuthController.students.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(
-                          "${tutorAuthController.students[index].fName!} ${tutorAuthController.students[index].lName!}",
-                        ),
-                        textColor: Colors.white,
-                      );
-                    },
-                  ),
-                ),
-
-                SizedBox(height: 40),
-
-               //Availability section
-               AvailabilitySection(tutorAuthController: tutorAuthController, sortedEntries: sortedEntries,),
-
-                SizedBox(
-                    width: 200,
-                    child: CustomButton(
-                      onPressed: () async{
-                        print(tutorAuthController.emailTEC.text);
-                        await tutorAuthController.signOut();
+              tutorAuthController.students.isEmpty
+                  ? const CustomText(text: "None")
+                  : Padding(
+                    padding: EdgeInsets.only(bottom: 16),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: tutorAuthController.students.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(
+                            "${tutorAuthController.students[index].fName!} ${tutorAuthController.students[index].lName!}",
+                          ),
+                          textColor: Colors.white,
+                        );
                       },
-                      text: "Sign out",
-                      bgColor: AppColors.red,
-                      textColor: AppColors.white,
-                    )
+                    ),
+                  ),
+
+              SizedBox(height: 40),
+
+              //Availability section
+              AvailabilitySection(
+                tutorAuthController: tutorAuthController,
+                sortedEntries: sortedEntries,
+              ),
+
+              SizedBox(
+                width: 200,
+                child: CustomButton(
+                  onPressed: () async {
+                    print(tutorAuthController.emailTEC.text);
+                    await tutorAuthController.signOut();
+                  },
+                  text: "Sign out",
+                  bgColor: AppColors.red,
+                  textColor: AppColors.white,
                 ),
-              ],
-            );}),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }

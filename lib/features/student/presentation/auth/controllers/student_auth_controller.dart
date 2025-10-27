@@ -93,8 +93,6 @@ class StudentAuthController extends GetxController {
   }
 
   Future signIn(Course course, {Tutor? tutor}) async {
-    print("sign in student");
-
     querySnapshot = await studentRepo.studentsCollection
         .where('email', isEqualTo: emailTEC.text)
         .limit(1)
@@ -114,9 +112,7 @@ class StudentAuthController extends GetxController {
     firstName.value = querySnapshot!.docs.first['f_name'];
     lastName.value = querySnapshot!.docs.first['l_name'];
 
-    // TODO: Put in navigation to profile page
     Get.to(StudentProfilePage());
-
   }
 
   Future signOut() async {

@@ -80,12 +80,12 @@ class _PurposePageState extends State<PurposePage> {
                     if (studentAuthController.register.value) {
                       studentAuthController.addStudent(
                         purposeController.selectedCourse.value!,
-                        purposeController.selectedTutor?.value,
+                        purposeController.selectedTutor.value,
                       );
                     } else {
                       await studentAuthController.signIn(
                         purposeController.selectedCourse.value!,
-                        tutor: purposeController.selectedTutor?.value,
+                        tutor: purposeController.selectedTutor.value,
                       );
                     }
                   },

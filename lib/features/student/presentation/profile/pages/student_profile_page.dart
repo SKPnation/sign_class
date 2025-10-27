@@ -74,9 +74,17 @@ class StudentProfilePage extends StatelessWidget {
 
               if(purposeController.selectedTutor != null)
                 Obx((){
-                  return CustomText(
-                    text: "Tutor: ${purposeController.selectedTutor?.value.name}",
+                  return Column(
+                    children: [
+                      SizedBox(height: 16),
+
+                      CustomText(text: "Tutor", weight: FontWeight.bold, size: AppFonts.baseSize,),
+
+                      CustomText(
+                  text: "${purposeController.selectedTutor.value?.fName} ${purposeController.selectedTutor.value?.lName}",
                     size: 16,
+                  ),
+                    ]
                   );
                 }),
 

@@ -26,13 +26,27 @@ class CoursesRepoImpl extends CoursesRepo {
 
         for (var ref in assignedRefs) {
           if (ref is DocumentReference) {
+            DocumentReference<Map<String, dynamic>> workScheduleRef(String tutorId) =>
+                FirebaseFirestore.instance.doc('/tutor_availability/$tutorId');
+
             final tutorSnap = await ref.get();
+
             if (tutorSnap.exists) {
+              //Get profile
+              Map<String, dynamic> profile =
+              tutorSnap.data() as Map<String, dynamic>;
+              //Get work schedule
+              DocumentSnapshot<Map<String, dynamic>> workScheduleSnap = await workScheduleRef(tutorSnap.id).get();
+              Map<String, dynamic>? workSchedule;
+              if(workScheduleSnap.exists){
+                workSchedule = workScheduleSnap.data() as Map<String, dynamic>;
+              }
+
+              profile.addAll({"work_schedule": workSchedule});
+              Tutor tutor = Tutor.fromMap(profile);
+
               tutors.add(
-                Tutor.fromMap({
-                  'id': tutorSnap.id,
-                  ...tutorSnap.data() as Map<String, dynamic>,
-                }),
+                tutor
               );
             }
           }
