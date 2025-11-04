@@ -30,12 +30,40 @@ class Student {
     this.timeOut,
   });
 
-
-  static Future<Student> fromMapAsync(Map<String, dynamic> map, String docId) async {
+  static Future<Student> fromMapAsync(
+      Map<String, dynamic> map,
+      String docId,
+      ) async {
     Course course = await getCourse(map['course'] as DocumentReference);
     Tutor? tutor;
-    if(map['tutor'] != null){
-     tutor = await getTutor(map['tutor'] as DocumentReference);
+    if (map['tutor'] != null) {
+      tutor = await getTutor(map['tutor'] as DocumentReference);
+    }
+
+    // convert timestamps to date first
+    DateTime createdAt;
+    if (map['created_at'] is Timestamp) {
+      createdAt = (map['created_at'] as Timestamp).toDate();
+    } else {
+      createdAt = DateTime.parse(map['created_at']);
+    }
+
+    DateTime? timeIn;
+    if (map['time_in'] != null) {
+      if (map['time_in'] is Timestamp) {
+        timeIn = (map['time_in'] as Timestamp).toDate();
+      } else {
+        timeIn = DateTime.parse(map['time_in']);
+      }
+    }
+
+    DateTime? timeOut;
+    if (map['time_out'] != null) {
+      if (map['time_out'] is Timestamp) {
+        timeOut = (map['time_out'] as Timestamp).toDate();
+      } else {
+        timeOut = DateTime.parse(map['time_out']);
+      }
     }
 
     return Student(
@@ -44,11 +72,11 @@ class Student {
       lName: map['l_name'] ?? '',
       email: map['email'] ?? '',
       nameLower: map['name_lower'] ?? '',
-      createdAt: (map['created_at'] as Timestamp).toDate(),
-      timeIn: map['time_in'] != null ? (map['time_in'] as Timestamp).toDate() : null,
-      timeOut: map['time_out'] != null ? (map['time_out'] as Timestamp).toDate() : null,
+      createdAt: createdAt,
+      timeIn: timeIn,
+      timeOut: timeOut,
       course: course,
-      tutor: tutor
+      tutor: tutor,
     );
   }
 
@@ -59,11 +87,17 @@ class Student {
       'l_name': lName,
       'name_lower': "${fName?.toLowerCase()} ${lName?.toLowerCase()}",
       'email': email,
-      'created_at': Timestamp.fromDate(createdAt!),
-      'time_in': timeIn != null ? Timestamp.fromDate(timeIn!) : null,
-      'time_out': timeOut != null ? Timestamp.fromDate(timeOut!) : null,
-      'course': CoursesRepoImpl().coursesCollection.doc(course?.id!),
-      'tutor': StudentRepoImpl().tutorsCollection.doc(tutor?.id!),
+      // store as ISO string so GetStorage can encode it
+      'created_at': createdAt!.toIso8601String(),
+      'time_in': timeIn?.toIso8601String(),
+      'time_out': timeOut?.toIso8601String(),
+      // only references for Firestore
+      'course': course != null
+          ? CoursesRepoImpl().coursesCollection.doc(course!.id!)
+          : null,
+      'tutor': tutor != null
+          ? StudentRepoImpl().tutorsCollection.doc(tutor!.id!)
+          : null,
     };
   }
 }

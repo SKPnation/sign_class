@@ -71,43 +71,57 @@ class StudentAuthController extends GetxController {
   }
 
   addStudent(Course course, Tutor? tutor) async {
-    Student studentModel = Student(
-      id: studentRepo.studentsCollection.doc().id,
-      fName: firstNameTEC.text,
-      lName: lastNameTEC.text,
-      email: emailTEC.text,
+    // create id once
+    final newId = studentRepo.studentsCollection.doc().id;
+
+    Student student = Student(
+      id: newId,
+      fName: firstNameTEC.text.trim(),
+      lName: lastNameTEC.text.trim(),
+      email: emailTEC.text.trim(),
       createdAt: DateTime.now(),
       timeIn: DateTime.now(),
+      course: course,
+      tutor: tutor,
     );
 
-    await studentRepo.createStudent(studentModel, course, tutor);
+    await studentRepo.createStudent(student, course, tutor);
+
     onboardingController.numOfSignedInStudents.value++;
 
-    firstName.value = querySnapshot!.docs.first['f_name'];
-    lastName.value = querySnapshot!.docs.first['l_name'];
+    // set names in controller AFTER successful create
+    firstName.value = firstNameTEC.text.trim();
+    lastName.value = lastNameTEC.text.trim();
 
     Get.to(StudentProfilePage());
   }
 
   Future signIn(Course course, {Tutor? tutor}) async {
-    querySnapshot = await studentRepo.studentsCollection
-        .where('email', isEqualTo: emailTEC.text)
+    final snap = await studentRepo.studentsCollection
+        .where('email', isEqualTo: emailTEC.text.trim())
         .limit(1)
         .get();
 
-    var data = {
-      "id": querySnapshot!.docs.first.id,
-      "course": coursesRepo.coursesCollection.doc(course.id!),
-      "tutor": tutor == null ? null : tutorRepo.tutorsCollection.doc(tutor.id!),
+    if (snap.docs.isEmpty) {
+      // student not found
+      Get.snackbar("Error", "Student not found");
+      return;
+    }
+
+    final doc = snap.docs.first;
+
+    await studentRepo.updateUser({
+      "id": doc.id,
+      "course": course.id,   // use ID not DocumentReference
+      "tutor": tutor?.id,
       "time_in": DateTime.now(),
       "time_out": null,
-    };
+    });
 
-    await studentRepo.updateUser(data);
     onboardingController.numOfSignedInStudents.value++;
 
-    firstName.value = querySnapshot!.docs.first['f_name'];
-    lastName.value = querySnapshot!.docs.first['l_name'];
+    firstName.value = doc['f_name'];
+    lastName.value  = doc['l_name'];
 
     Get.to(StudentProfilePage());
   }
@@ -119,9 +133,21 @@ class StudentAuthController extends GetxController {
         .limit(1)
         .get();
 
-    Map<String, dynamic> data = querySnapshot!.docs.first.data() as Map<String, dynamic>;
+    Map<String, dynamic> data =
+    querySnapshot!.docs.first.data() as Map<String, dynamic>;
 
-    var timeIn = (data['time_in'] as Timestamp).toDate();
+    // FIX
+    dynamic rawTimeIn = data['time_in'];
+    late DateTime timeIn;
+
+    if (rawTimeIn is Timestamp) {
+      timeIn = rawTimeIn.toDate();
+    } else if (rawTimeIn is String) {
+      timeIn = DateTime.parse(rawTimeIn);
+    } else {
+      throw Exception("Unknown time_in type");
+    }
+
     var timeOut = DateTime.now();
 
     Duration duration = timeOut.difference(timeIn);
@@ -132,8 +158,10 @@ class StudentAuthController extends GetxController {
     };
 
     await studentRepo.updateUser(input);
-    //
-    // //TODO: Go to success page
-    Get.to(SignOutSuccessPage(userName: "${firstName.value} ${lastName.value}", timeSpent: formatDuration(duration)));
+
+    Get.to(SignOutSuccessPage(
+        userName: "${firstName.value} ${lastName.value}",
+        timeSpent: formatDuration(duration)
+    ));
   }
 }

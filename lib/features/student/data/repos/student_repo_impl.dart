@@ -18,23 +18,35 @@ class StudentRepoImpl extends StudentRepo {
 
   @override
   Future<void> createStudent(Student user, Course course, Tutor? tutor) async {
-    Map<String, dynamic> userMap = user.toMap();
+    final map = user.toMap();
 
-    // Update the course key with the course document ID or path (not DocumentReference itself)
-    userMap["course"] = CoursesRepoImpl().coursesCollection.doc(course.id!);
-    userMap["tutor"] = tutor == null ? null : tutorsCollection.doc(tutor.id!);
+    // convert ID strings to references for Firestore
+    map["course"] = CoursesRepoImpl().coursesCollection.doc(course.id!);
+    map["tutor"]  = tutor == null ? null : tutorsCollection.doc(tutor.id!);
 
-    await studentsCollection.doc(userMap['id']).set(userMap);
+    await studentsCollection.doc(map['id']).set(map);
 
-    List<Map<String, dynamic>> students = getStore.get(_Keys.students) ?? [];
+    // --- LOCAL STORAGE SAFE MAP ---
+    Map<String, dynamic> localMap = {
+      "id": map["id"],
+      "f_name": user.fName,
+      "l_name": user.lName,
+      "email": user.email,
+      "name_lower": "${user.fName?.toLowerCase()} ${user.lName?.toLowerCase()}",
+      "created_at": user.createdAt!.toIso8601String(),
+      "time_in": user.timeIn!.toIso8601String(),
+      "time_out": null,
+      "course_id": course.id,
+      "tutor_id": tutor?.id,
+    };
 
-    print("CREATE: OLD LIST OF STUDENTS: $students");
+    List stored = getStore.get(_Keys.students) ?? [];
+    stored.add(localMap);
+    getStore.set(_Keys.students, stored);
 
-    students.add(userMap);
-    getStore.set(_Keys.students, students);
-
-    print("CREATE: NEW LIST OF STUDENTS: ${getStore.get(_Keys.students)}");
+    print("✅ saved locally: $localMap");
   }
+
 
   @override
   void deleteUser(String id) {
@@ -48,10 +60,39 @@ class StudentRepoImpl extends StudentRepo {
   }
 
   @override
-  Future<void> updateUser(Map<String, dynamic> fields) async {
-    final data = Map<String, dynamic>.from(fields)..remove('id');
-    await studentsCollection.doc(fields['id']).update(data);
+  Future<void> updateUser(Map<String, dynamic> input) async {
+    final map = {...input};
+
+    // convert string -> reference (Firestore only)
+    if (map["course"] != null && map["course"] is String) {
+      map["course"] = CoursesRepoImpl().coursesCollection.doc(map["course"]);
+    }
+
+    if (map["tutor"] != null && map["tutor"] is String) {
+      map["tutor"] = tutorsCollection.doc(map["tutor"]);
+    }
+
+    await studentsCollection.doc(map["id"]).update(map);
+
+    // load from store safely (cast)
+    final raw = getStore.get(_Keys.students) ?? [];
+    final List<Map<String, dynamic>> students =
+    List<Map<String, dynamic>>.from(raw.map((e) => Map<String, dynamic>.from(e)));
+
+    // find index
+    final index = students.indexWhere((s) => s["id"] == map["id"]);
+
+    if (index != -1) {
+      students[index] = {
+        ...students[index],
+        ...input, // input only (string ISO date etc)
+      };
+    }
+
+    getStore.set(_Keys.students, students);
   }
+
+
 
   // @override
   // Future<List<Student>> getStudentsByNamePrefix(String prefix) async {
