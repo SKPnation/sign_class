@@ -102,7 +102,7 @@ class UserTypesPage extends StatelessWidget {
 
           Align(
             alignment: Alignment.bottomLeft,
-            child: CustomText(text: "1.0.0+3", color: AppColors.grey[200]),
+            child: CustomText(text: "1.0.0+4", color: AppColors.grey[200]),
           ),
         ],
       ),

@@ -71,25 +71,22 @@ class StudentAuthController extends GetxController {
   }
 
   addStudent(Course course, Tutor? tutor) async {
-    print("Add student");
-    // Student studentModel = Student(
-    //   id: studentRepo.studentsCollection.doc().id,
-    //   fName: firstNameTEC.text,
-    //   lName: lastNameTEC.text,
-    //   email: emailTEC.text,
-    //   createdAt: DateTime.now(),
-    //   timeIn: DateTime.now(),
-    // );
-    //
-    // await studentRepo.createStudent(studentModel, course, tutor);
-    // onboardingController.numOfSignedInStudents.value++;
-    //
-    // // Get.to(SuccessPage(userName: "${firstNameTEC.text} ${lastNameTEC.text}"));
-    //
-    // firstNameTEC.clear();
-    // lastNameTEC.clear();
-    // emailTEC.clear();
-    // PurposeController.instance.selectedCourse.value = null;
+    Student studentModel = Student(
+      id: studentRepo.studentsCollection.doc().id,
+      fName: firstNameTEC.text,
+      lName: lastNameTEC.text,
+      email: emailTEC.text,
+      createdAt: DateTime.now(),
+      timeIn: DateTime.now(),
+    );
+
+    await studentRepo.createStudent(studentModel, course, tutor);
+    onboardingController.numOfSignedInStudents.value++;
+
+    firstName.value = querySnapshot!.docs.first['f_name'];
+    lastName.value = querySnapshot!.docs.first['l_name'];
+
+    Get.to(StudentProfilePage());
   }
 
   Future signIn(Course course, {Tutor? tutor}) async {
