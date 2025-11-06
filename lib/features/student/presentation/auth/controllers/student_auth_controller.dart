@@ -96,7 +96,7 @@ class StudentAuthController extends GetxController {
     Get.to(StudentProfilePage());
   }
 
-  Future signIn(Course course, {Tutor? tutor}) async {
+  Future signIn(Course? course, {Tutor? tutor}) async {
     final snap = await studentRepo.studentsCollection
         .where('email', isEqualTo: emailTEC.text.trim())
         .limit(1)
@@ -112,7 +112,7 @@ class StudentAuthController extends GetxController {
 
     await studentRepo.updateUser({
       "id": doc.id,
-      "course": course.id,   // use ID not DocumentReference
+      "course": course?.id,   // use ID not DocumentReference
       "tutor": tutor?.id,
       "time_in": DateTime.now(),
       "time_out": null,

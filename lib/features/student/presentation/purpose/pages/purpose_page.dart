@@ -18,8 +18,8 @@ class PurposePage extends StatefulWidget {
 }
 
 class _PurposePageState extends State<PurposePage> {
-  final purposeController = Get.put(PurposeController());
-  final studentAuthController = Get.put(StudentAuthController());
+  final purposeController = PurposeController.instance;
+  final studentAuthController = StudentAuthController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,7 @@ class _PurposePageState extends State<PurposePage> {
                       );
                     } else {
                       await studentAuthController.signIn(
-                        purposeController.selectedCourse.value!,
+                        purposeController.selectedCourse.value,
                         tutor: purposeController.selectedTutor.value,
                       );
                     }
