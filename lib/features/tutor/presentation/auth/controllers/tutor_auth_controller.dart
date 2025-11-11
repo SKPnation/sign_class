@@ -64,8 +64,7 @@ class TutorAuthController extends GetxController {
       if (studentQuerySnapshot.docs.isNotEmpty) {
         students.value = await Future.wait(
           studentQuerySnapshot.docs.map(
-                (doc) async =>
-            await Student.fromMapAsync(
+                (doc) async => Student.fromMap(
               doc.data() as Map<String, dynamic>,
               doc.id,
             ),

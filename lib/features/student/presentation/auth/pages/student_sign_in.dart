@@ -8,7 +8,6 @@ import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/controllers/onboarding_controller.dart';
 import 'package:sign_class/features/student/presentation/auth/controllers/student_auth_controller.dart';
-import 'package:sign_class/features/student/presentation/onboarding/pages/student_onboarding.dart';
 import 'package:sign_class/features/student/presentation/purpose/pages/purpose_page.dart';
 
 class StudentSignIn extends StatefulWidget {

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
+import 'package:sign_class/core/data/local/get_store.dart';
 import 'package:sign_class/features/student/data/repos/student_repo_impl.dart';
+import 'package:sign_class/features/student/data/repos/user_data_store.dart';
 import 'package:sign_class/features/student/presentation/onboarding/pages/student_onboarding.dart';
 import 'package:sign_class/features/tutor/presentation/onboarding/pages/tutor_onboarding.dart';
 
@@ -21,11 +23,13 @@ class OnboardingController extends GetxController {
 
   void chooseTutor() {
     currentUserType.value = AppStrings.tutor;
+     getStore.set(userDataStore.userType, AppStrings.tutor);
     Get.to(TutorOnboarding());
   }
 
   void chooseStudent() {
     currentUserType.value = AppStrings.student;
+    getStore.set(userDataStore.userType, AppStrings.student);
     Get.to(StudentOnboarding());
   }
 

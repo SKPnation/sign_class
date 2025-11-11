@@ -28,7 +28,7 @@ class Course {
       code: map['code'] ?? '',
       category: map['category'] ?? '',
       status: map['status'] ?? '',
-      createdAt: (map['created_at'] as Timestamp).toDate(),
+      createdAt: map['created_at'] == null ? null : (map['created_at'] as Timestamp).toDate(),
       assignedTutors: [],
     );
   }

@@ -43,10 +43,11 @@ class Tutor {
       'f_name': fName,
       'l_name': lName,
       'email': email,
+      'work_schedule': workSchedule,
       'created_at': Timestamp.fromDate(createdAt!),
-      'blocked_at': null,
-      'time_in': null,
-      'time_out': null,
+      'blocked_at': blockedAt == null ? null : Timestamp.fromDate(blockedAt!),
+      'time_in': Timestamp.fromDate(timeIn!),
+      'time_out': timeOut == null ? null : Timestamp.fromDate(timeOut!),
     };
   }
 }

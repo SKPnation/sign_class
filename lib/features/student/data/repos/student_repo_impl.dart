@@ -64,28 +64,35 @@ class StudentRepoImpl extends StudentRepo {
     final map = {...input};
 
     // convert string -> reference (Firestore only)
-    if (map["course"] != null && map["course"] is String) {
+    if (map["course"] is String) {
       map["course"] = CoursesRepoImpl().coursesCollection.doc(map["course"]);
     }
-
-    if (map["tutor"] != null && map["tutor"] is String) {
+    if (map["tutor"] is String) {
       map["tutor"] = tutorsCollection.doc(map["tutor"]);
     }
 
-    await studentsCollection.doc(map["id"]).update(map);
+    // pull id out so we don't write it as a field by accident
+    final String? docId = map["id"] as String?;
+    if (docId == null || docId.isEmpty) {
+      throw Exception("updateUser: missing 'id' for document path.");
+    }
+    final firestorePayload = {...map}..remove("id");
+
+    await studentsCollection.doc(docId).update(firestorePayload);
 
     // load from store safely (cast)
     final raw = getStore.get(_Keys.students) ?? [];
-    final List<Map<String, dynamic>> students =
-    List<Map<String, dynamic>>.from(raw.map((e) => Map<String, dynamic>.from(e)));
+    final List<Map<String, dynamic>> students = List<Map<String, dynamic>>.from(
+      raw.map((e) => Map<String, dynamic>.from(e)),
+    );
 
     // find index
-    final index = students.indexWhere((s) => s["id"] == map["id"]);
+    final index = students.indexWhere((s) => s["id"] == docId);
 
     if (index != -1) {
       students[index] = {
         ...students[index],
-        ...input, // input only (string ISO date etc)
+        ...input, // keep raw input (e.g., time_out as DateTime) in local cache
       };
     }
 
@@ -140,7 +147,7 @@ class StudentRepoImpl extends StudentRepo {
     final doc = querySnapshot.docs.first;
 
     // Convert FireStore data to Student model
-    return await Student.fromMapAsync(
+    return Student.fromMap(
       doc.data() as Map<String, dynamic>,
       doc.id,
     );
@@ -156,7 +163,7 @@ class StudentRepoImpl extends StudentRepo {
         var map = doc.data() as Map<String, dynamic>;
 
         if(map['time_out'] == null){
-          return await Student.fromMapAsync(map, doc.id);
+          return Student.fromMap(map, doc.id);
         }
         return null;
       }),
