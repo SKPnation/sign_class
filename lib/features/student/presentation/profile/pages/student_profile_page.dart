@@ -48,8 +48,6 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(userDataStore.userType);
-
     return WillPopScope(
       child: Scaffold(
         body: Center(
@@ -166,7 +164,7 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
           ),
         ),
       ),
-      onWillPop: () async => false, // ← BLOCK BACK
+      onWillPop: () async => false,
     );
   }
 }

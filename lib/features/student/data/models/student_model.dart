@@ -3,7 +3,7 @@ import 'package:sign_class/core/helpers/timestamp_helper.dart';
 import 'package:sign_class/core/utils/functions.dart';
 import 'package:sign_class/features/student/data/models/course_model.dart';
 import 'package:sign_class/features/student/data/repos/courses_repo_impl.dart';
-import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 import 'package:sign_class/features/student/data/repos/student_repo_impl.dart';
 
 // class Student {
@@ -161,13 +161,103 @@ import 'package:sign_class/features/student/data/repos/student_repo_impl.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// class Student {
+//   final String? id;
+//   final String? fName;
+//   final String? lName;
+//   final String? nameLower;
+//   final String? email;
+//   final Course? course; // keep your type
+//   final Tutor? tutor;
+//   final DateTime? createdAt;
+//   final DateTime? timeIn;
+//   final DateTime? timeOut;
+//
+//   Student({
+//     this.id,
+//     this.fName,
+//     this.lName,
+//     this.nameLower,
+//     this.email,
+//     this.course,
+//     this.tutor,
+//     this.createdAt,
+//     this.timeIn,
+//     this.timeOut,
+//   });
+//
+//   factory Student.fromMap(Map<String, dynamic> map, String docId) {
+//     return Student(
+//       id: docId,
+//       fName: map['f_name'] ?? '',
+//       lName: map['l_name'] ?? '',
+//       email: map['email'] ?? '',
+//       nameLower: map['name_lower'] ?? '',
+//       createdAt: _toDate(map['created_at']),
+//       timeIn: _toDate(map['time_in']),
+//       timeOut: _toDate(map['time_out']),
+//       course: _toCourse(map['course']),
+//       tutor: _toTutor(map['tutor']),
+//     );
+//   }
+//
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'id': id,
+//       'f_name': fName,
+//       'l_name': lName,
+//       'name_lower': "${fName?.toLowerCase()} ${lName?.toLowerCase()}",
+//       'email': email,
+//       'created_at': createdAt?.toIso8601String(),
+//       'time_in': timeIn?.toIso8601String(),
+//       'time_out': timeOut?.toIso8601String(),
+//       // keep whatever your local cache expects:
+//       'course': course?.toMap(),
+//       'tutor': tutor?.toMap(),
+//     };
+//   }
+//
+//   static DateTime? _toDate(dynamic value) {
+//     if (value == null) return null;
+//     if (value is Timestamp) return value.toDate();
+//     if (value is String) return DateTime.tryParse(value);
+//     return null;
+//   }
+//
+//   static Course? _toCourse(dynamic value) {
+//     if (value == null) return null;
+//     if (value is DocumentReference) {
+//       // lightweight Course with only id; you can lazy-load details later
+//       return Course(id: value.id, name: '', code: '', category: '', createdAt: null);
+//     }
+//     if (value is Map<String, dynamic>) {
+//       final id = value['id']?.toString() ?? '';
+//       return Course.fromMap(value, id);
+//     }
+//     return null;
+//   }
+//
+//   static Tutor? _toTutor(dynamic value) {
+//     if (value == null) return null;
+//     if (value is DocumentReference) {
+//       return Tutor(id: value.id, fName: '', lName: '', email: '', createdAt: null);
+//     }
+//     if (value is Map<String, dynamic>) {
+//       return Tutor.fromMap(value);
+//     }
+//     return null;
+//   }
+// }
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Student {
   final String? id;
   final String? fName;
   final String? lName;
   final String? nameLower;
   final String? email;
-  final Course? course; // keep your type
+  final Course? course;
   final Tutor? tutor;
   final DateTime? createdAt;
   final DateTime? timeIn;
@@ -186,6 +276,8 @@ class Student {
     this.timeOut,
   });
 
+  // ---------- FACTORY ----------
+
   factory Student.fromMap(Map<String, dynamic> map, String docId) {
     return Student(
       id: docId,
@@ -201,21 +293,41 @@ class Student {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  // ---------- SERIALIZERS ----------
+
+  /// Full toMap (used for Firestore writes if you need it)
+  Map<String, dynamic> toMap({
+    CollectionReference? coursesCollection,
+    CollectionReference? tutorsCollection,
+  }) {
     return {
-      'id': id,
       'f_name': fName,
       'l_name': lName,
-      'name_lower': "${fName?.toLowerCase()} ${lName?.toLowerCase()}",
+      'name_lower': "${(fName ?? '').toLowerCase()} ${(lName ?? '').toLowerCase()}",
       'email': email,
-      'created_at': createdAt?.toIso8601String(),
-      'time_in': timeIn?.toIso8601String(),
-      'time_out': timeOut?.toIso8601String(),
-      // keep whatever your local cache expects:
-      'course': course?.toMap(),
-      'tutor': tutor?.toMap(),
+      'created_at': createdAt,
+      'time_in': timeIn,
+      'time_out': timeOut,
+      if (course?.id != null && coursesCollection != null)
+        'course': coursesCollection.doc(course!.id),
+      if (tutor?.id != null && tutorsCollection != null)
+        'tutor': tutorsCollection.doc(tutor!.id),
     };
   }
+
+  /// Lightweight JSON-safe map for caching locally (GetStorage, etc.)
+  Map<String, dynamic> toCacheMap() => {
+    'id': id,
+    'f_name': fName,
+    'l_name': lName,
+    'email': email,
+    'time_in': timeIn?.toIso8601String(),
+    'time_out': timeOut?.toIso8601String(),
+    'course_id': course?.id,
+    'tutor_id': tutor?.id,
+  };
+
+  // ---------- STATIC HELPERS ----------
 
   static DateTime? _toDate(dynamic value) {
     if (value == null) return null;
@@ -227,7 +339,6 @@ class Student {
   static Course? _toCourse(dynamic value) {
     if (value == null) return null;
     if (value is DocumentReference) {
-      // lightweight Course with only id; you can lazy-load details later
       return Course(id: value.id, name: '', code: '', category: '', createdAt: null);
     }
     if (value is Map<String, dynamic>) {
@@ -247,4 +358,19 @@ class Student {
     }
     return null;
   }
+}
+
+// ---------- EXTENSION (OPTIONAL) ----------
+// Makes .toCacheMap() available anywhere Student is used
+extension StudentCache on Student {
+  Map<String, dynamic> toCacheMap() => {
+    'id': id,
+    'f_name': fName,
+    'l_name': lName,
+    'email': email,
+    'time_in': timeIn?.toIso8601String(),
+    'time_out': timeOut?.toIso8601String(),
+    'course_id': course?.id,
+    'tutor_id': tutor?.id,
+  };
 }

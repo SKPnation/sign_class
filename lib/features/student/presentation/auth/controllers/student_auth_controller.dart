@@ -8,7 +8,7 @@ import 'package:sign_class/core/utils/functions.dart';
 import 'package:sign_class/features/controllers/onboarding_controller.dart';
 import 'package:sign_class/features/student/data/models/course_model.dart';
 import 'package:sign_class/features/student/data/models/my_profile_model.dart';
-import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 import 'package:sign_class/features/student/data/repos/courses_repo_impl.dart';
 import 'package:sign_class/features/student/data/models/student_model.dart';
 import 'package:sign_class/features/student/data/repos/student_repo_impl.dart';
@@ -153,7 +153,6 @@ class StudentAuthController extends GetxController {
       dataToStore["tutor"] = tutorMap;
     }
 
-    // ✅ Make everything JSON-encodable before writing to GetStorage
     userDataStore.user = Map<String, dynamic>.from(encodeFirestoreForJson(dataToStore));
 
     print("SIGN IN: PROFILE: ${userDataStore.user}");

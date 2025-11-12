@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 
 
 class Course {

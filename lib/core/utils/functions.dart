@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sign_class/features/student/data/models/course_model.dart';
-import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 
 Future<Course> getCourse(DocumentReference docRef) async {
   final courseSnap = await docRef.get();
