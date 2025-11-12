@@ -1,10 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sign_class/features/tutor/domain/tutor_repo.dart';
 
-abstract class _Keys {
-  static const tutors = 'tutors';
-}
-
 class TutorRepoImpl extends TutorRepo {
   final CollectionReference tutorsCollection = FirebaseFirestore.instance
       .collection('tutors');

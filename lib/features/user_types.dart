@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sign_class/core/constants/app_strings.dart';
 import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/global/custom_text.dart';
@@ -6,10 +7,19 @@ import 'package:sign_class/core/helpers/image_elements.dart';
 import 'package:sign_class/core/theme/colors.dart';
 import 'package:sign_class/core/theme/fonts.dart';
 import 'package:sign_class/features/controllers/onboarding_controller.dart';
+import 'package:sign_class/features/tutor/presentation/profile/pages/tutor_profile_page.dart';
 
-class UserTypesPage extends StatelessWidget {
+import 'student/data/repos/user_data_store.dart';
+import 'student/presentation/profile/pages/student_profile_page.dart';
+
+class UserTypesPage extends StatefulWidget {
   UserTypesPage({super.key});
 
+  @override
+  State<UserTypesPage> createState() => _UserTypesPageState();
+}
+
+class _UserTypesPageState extends State<UserTypesPage> {
   final onboardingController = OnboardingController.instance;
 
   @override
@@ -98,7 +108,6 @@ class UserTypesPage extends StatelessWidget {
               ),
             ),
           ),
-
 
           Align(
             alignment: Alignment.bottomLeft,

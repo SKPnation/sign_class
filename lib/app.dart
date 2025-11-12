@@ -38,13 +38,8 @@ class _AppState extends State<App> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return GetMaterialApp(
-            initialRoute: AppPages.initial,
-            // unknownRoute: GetPage(
-            //   name: '/notfound',
-            //   page: () => const Scaffold(
-            //       body: Center(child: Text("Page Not Found"))),
-            // ),
             theme: ThemeData(scaffoldBackgroundColor: AppColors.white),
+            initialRoute: AppPages.initial,
             getPages: AppPages.pages,
             debugShowCheckedModeBanner: false,
             initialBinding: AllControllerBinding(),

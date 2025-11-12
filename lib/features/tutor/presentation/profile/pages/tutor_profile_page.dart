@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:sign_class/core/global/custom_button.dart';
 import 'package:sign_class/core/global/custom_text.dart';
 import 'package:sign_class/core/theme/colors.dart';
+import 'package:sign_class/features/student/data/models/student_model.dart';
+import 'package:sign_class/features/student/data/repos/user_data_store.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 import 'package:sign_class/features/tutor/presentation/auth/controllers/tutor_auth_controller.dart';
 import 'package:sign_class/features/tutor/presentation/profile/widgets/availibility_section.dart';
 
@@ -15,9 +18,7 @@ class TutorProfilePage extends StatefulWidget {
 
 class _TutorProfilePageState extends State<TutorProfilePage> {
   final tutorAuthController = TutorAuthController.instance;
-  var sortedEntries = <MapEntry<String, dynamic>>[];
-
-  final List<String> weekdayOrder = [
+  final List<String> weekdayOrder = const [
     "monday",
     "tuesday",
     "wednesday",
@@ -28,102 +29,143 @@ class _TutorProfilePageState extends State<TutorProfilePage> {
   ];
 
   @override
+  void initState() {
+    tutorAuthController.getAvailability();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Obx(() {
-          if (tutorAuthController.availability.isNotEmpty) {
-            // Sort the map into a list of entries based on weekday order
-            sortedEntries =
-                tutorAuthController.availability.entries.toList()..sort(
-                  (a, b) => weekdayOrder
-                      .indexOf(a.key.toLowerCase())
-                      .compareTo(weekdayOrder.indexOf(b.key.toLowerCase())),
-                );
-          }
+    return WillPopScope(
+      onWillPop: () async => false, // block back
+      child: Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              // keep content narrow & centered
+              child: Obx(() {
+                List<Student> students = <Student>[];
+                final raw = userDataStore.user['students'];
+                if (raw is List && raw.isNotEmpty) {
+                  students = raw.map((e) {
+                    final m = Map<String, dynamic>.from(e as Map);
+                    return Student.fromMap(m, m['id']);
+                  }).toList();
+                }
 
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomText(text: "Profile", weight: FontWeight.bold),
+                // sort availability when present
+                final availability = tutorAuthController.availability;
+                final sortedEntries =
+                    availability.isEmpty
+                        ? const <MapEntry<String, dynamic>>[]
+                        : (availability.entries.toList()..sort(
+                          (a, b) => weekdayOrder
+                              .indexOf(a.key.toLowerCase())
+                              .compareTo(
+                                weekdayOrder.indexOf(b.key.toLowerCase()),
+                              ),
+                        ));
 
-              SizedBox(height: 30),
+                final t = Tutor.fromMap(userDataStore.user['tutor']);
+                // final students = tutorAuthController.students;
 
-              CircleAvatar(
-                radius: 50,
-                // adjust size
-                backgroundColor: Colors.grey[300],
-                // backgroundImage: tutorAuthController.tutor.value?.profileImage != null
-                //     ? NetworkImage(tutorAuthController.tutor.value?.profileImage!)
-                //     : null,
-                child: Icon(Icons.person, size: 50, color: Colors.white),
-
-                // tutor?.profileImage == null
-                //     ? const Icon(
-                //   Icons.person,
-                //   size: 50,
-                //   color: Colors.white,
-                // )
-                //     : null,
-              ),
-
-              SizedBox(height: 40),
-
-              CustomText(
-                text:
-                    "Signed in as: ${tutorAuthController.tutor.value?.fName} ${tutorAuthController.tutor.value?.lName}",
-                size: 16,
-              ),
-
-              SizedBox(height: 24),
-
-              const Text(
-                "Booked Students",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-
-              tutorAuthController.students.isEmpty
-                  ? const CustomText(text: "None")
-                  : Padding(
-                    padding: EdgeInsets.only(bottom: 16),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: tutorAuthController.students.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(
-                            "${tutorAuthController.students[index].fName!} ${tutorAuthController.students[index].lName!}",
-                          ),
-                          textColor: Colors.white,
-                        );
-                      },
-                    ),
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 24,
                   ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 8),
+                      const CustomText(
+                        text: "Profile",
+                        weight: FontWeight.bold,
+                      ),
 
-              SizedBox(height: 40),
+                      const SizedBox(height: 30),
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey[300],
+                        child: const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      ),
 
-              //Availability section
-              AvailabilitySection(
-                tutorAuthController: tutorAuthController,
-                sortedEntries: sortedEntries,
-              ),
+                      const SizedBox(height: 24),
+                      CustomText(
+                        text:
+                            "Signed in as: ${t.fName ?? ''} ${t.lName ?? ''}"
+                                .trim(),
+                        size: 16,
+                      ),
 
-              SizedBox(
-                width: 200,
-                child: CustomButton(
-                  onPressed: () async {
-                    print(tutorAuthController.emailTEC.text);
-                    await tutorAuthController.signOut();
-                  },
-                  text: "Sign out",
-                  bgColor: AppColors.red,
-                  textColor: AppColors.white,
-                ),
-              ),
-            ],
-          );
-        }),
+                      const SizedBox(height: 24),
+                      const Text(
+                        "Booked Students",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+
+                      if (students.isEmpty)
+                        const CustomText(text: "None")
+                      else
+                        Center(
+                          child: SizedBox(
+                            width: 260,
+                            // tighter width so list text appears centered
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                for (final s in students) ...[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                    ),
+                                    child: Text(
+                                      "${s.fName ?? ''} ${s.lName ?? ''}"
+                                          .trim(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      const SizedBox(height: 32),
+
+                      // Availability section
+                      AvailabilitySection(
+                        tutorAuthController: tutorAuthController,
+                        sortedEntries: sortedEntries,
+                      ),
+
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: 200,
+                        child: CustomButton(
+                          onPressed: () async {
+                            await tutorAuthController.signOut();
+                          },
+                          text: "Sign out",
+                          bgColor: AppColors.red,
+                          textColor: AppColors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
       ),
     );
   }

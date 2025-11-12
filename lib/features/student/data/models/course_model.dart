@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 
 
 class Course {
@@ -28,7 +28,7 @@ class Course {
       code: map['code'] ?? '',
       category: map['category'] ?? '',
       status: map['status'] ?? '',
-      createdAt: (map['created_at'] as Timestamp).toDate(),
+      createdAt: map['created_at'] == null ? null : (map['created_at'] as Timestamp).toDate(),
       assignedTutors: [],
     );
   }

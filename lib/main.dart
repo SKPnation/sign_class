@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:sign_class/app.dart';
 import 'package:sign_class/features/controllers/onboarding_controller.dart';
 import 'package:sign_class/features/student/presentation/auth/controllers/student_auth_controller.dart';
@@ -16,6 +17,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await GetStorage.init();
 
   // Option A: register controller after Firebase is ready
   Get.put<OnboardingController>(OnboardingController());

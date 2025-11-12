@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sign_class/features/student/data/models/course_model.dart';
-import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 import 'package:sign_class/features/student/domain/repos/courses_repo.dart';
 
 class CoursesRepoImpl extends CoursesRepo {
-  final CollectionReference coursesCollection =
+  final CollectionReference<Map<String, dynamic>> coursesCollection =
   FirebaseFirestore.instance.collection('courses');
 
   @override
@@ -14,7 +14,7 @@ class CoursesRepoImpl extends CoursesRepo {
     final coursesSnapshot = await coursesCollection.get();
 
     for (var courseDoc in coursesSnapshot.docs) {
-      final data = courseDoc.data() as Map<String, dynamic>;
+      final data = courseDoc.data();
 
       var course = Course.fromMap(data, courseDoc.id);
 

@@ -1,6 +1,6 @@
 import 'package:sign_class/features/student/data/models/course_model.dart';
 import 'package:sign_class/features/student/data/models/student_model.dart';
-import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 
 abstract class StudentRepo {
   Future<void> createStudent(Student user, Course course, Tutor? tutor); //for new user

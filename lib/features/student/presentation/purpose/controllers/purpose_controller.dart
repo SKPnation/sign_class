@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:sign_class/features/student/data/models/course_model.dart';
-import 'package:sign_class/features/student/data/models/tutor_model.dart';
+import 'package:sign_class/features/tutor/data/tutor_model.dart';
 import 'package:sign_class/features/student/data/repos/courses_repo_impl.dart';
 
 class PurposeController extends GetxController {
